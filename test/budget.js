@@ -91,24 +91,22 @@ describe('Budget', () => {
   * Test the /DELETE/:id route
   */
   describe('/DELETE/:id book', () => {
-      it('it should DELETE a book given the id', (done) => {
-        let budget = {
-            name: "Savings",
-            type: VALUE,
-            amount: 10,
-        }
-        book.save((err, book) => {
-                chai.request(app)
-                .delete('/book/' + book.id)
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('message').eql('Book successfully deleted!');
-                    res.body.result.should.have.property('ok').eql(1);
-                    res.body.result.should.have.property('n').eql(1);
-                  done();
-                });
+    it('it should DELETE a book given the id', (done) => {
+      const budget = {
+        name: "Savings",
+        type: VALUE,
+        amount: 10,
+      }
+      db.budget.addItem(budget).then((err, budget) => {
+        chai.request(app)
+          .delete('/api/budget/' + budget._id)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('number');
+            res.body.should.eql(1);
+            done();
           });
+        });
       });
   });
 });
