@@ -11,7 +11,7 @@ router.get('/', function (req, res) {
   respond(res, getBudgetItems());
 });
 
-router.put('/', function (req, res) {
+router.put('/:id', function (req, res) {
   respond(res, updateBudgetItem(req.body.item));
 });
 
