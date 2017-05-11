@@ -39,12 +39,27 @@ module.exports = function(db){
 
   budget.truncateTable = function(){
     return new Promise((resolve, reject) => {
-      db.remove({}, function (err, numRemoved) {
+      db.remove({}, { multi: true }, function (err, numRemoved) {
         if(err) reject(err);
         else resolve(numRemoved);
       });
     });
   }
   
+/* Testing */
+budget.truncateTable().then(() => {
+  budget.addItem({
+    name: 'Rent',
+    amount: '500',
+    period: 'MONTH'
+  });
+  budget.addItem({
+    name: 'Utilities',
+    amount: '50',
+    period: 'MONTH'
+  });
+});
+
+
   return budget;
 }

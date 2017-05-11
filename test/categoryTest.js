@@ -1,14 +1,17 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 const should = chai.should();
 const app = require('../server').app;
 const db = require('../db');
 
 process.env.NODE_ENV = 'test';
 
-describe('Budget Category', () => {
+describe('Category', (done) => {
   beforeEach((done) => {
-    db.category.truncateTable();
+    db.category.truncateTable()
+    .then(() => done())
+    .catch(done);
   });
   
   describe('/GET category', () => {
@@ -55,16 +58,14 @@ describe('Budget Category', () => {
         amount: 10,
         period: 'WEEKLY' 
       }
-      db.category.addItem(category).then((err, budget) => {
+      db.category.addItem(category).then((category) => {
         chai.request(app)
           .put('/api/category/' + category._id)
           .send({name: 'Spending', type: 'PERCENT', amount: 10})
           .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.book.should.have.property('name').eql('Spending');
-            res.body.book.should.have.property('type').eql('PERCENT');
-            res.body.book.should.have.property('amount').eql(10);
+            res.body.should.be.a('number');
+            res.body.should.eql(1);
             done();
           });
       })
@@ -73,13 +74,13 @@ describe('Budget Category', () => {
   });
   
   describe('/DELETE/:id category', () => {
-    it('it should DELETE a category given the id', (done) => {
+    it('it should DELETE a categoy given the id', (done) => {
       const category = {
         name: "Savings",
-        type: VALUE,
+        type: 'VALUE',
         amount: 10,
-      }
-      db.category.addItem(category).then((err, budget) => {
+      };
+      db.category.addItem(category).then((category) => {
         chai.request(app)
           .delete('/api/category/' + category._id)
           .end((err, res) => {
@@ -88,8 +89,8 @@ describe('Budget Category', () => {
             res.body.should.eql(1);
             done();
           });
-        });
       })
       .catch(done);
+    });
   });
 });

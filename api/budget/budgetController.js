@@ -4,7 +4,7 @@ const {budget} = require('../../db');
 const {respond} = require('../response');
 
 router.post('/', function (req, res) {
-  respond(res, budget.addItem(req.body.item));
+  respond(res, budget.addItem(req.body));
 });
 
 router.get('/', function (req, res) {
@@ -12,7 +12,7 @@ router.get('/', function (req, res) {
 });
 
 router.put('/:id', function (req, res) {
-  respond(res, budget.updateItem(req.params.id, req.body.item));
+  respond(res, budget.updateItem(req.params.id, req.body));
 });
 
 router.delete('/:id', function (req, res) {

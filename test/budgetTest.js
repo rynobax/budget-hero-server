@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 const should = chai.should();
 const app = require('../server').app;
 const db = require('../db');
@@ -8,8 +9,11 @@ process.env.NODE_ENV = 'test';
 
 describe('Budget', () => {
   beforeEach((done) => {
-    db.budget.truncateTable();
+    db.budget.truncateTable()
+      .then(() => done())
+      .catch(done);
   });
+  
   describe('/GET budget', () => {
     it('it should GET all the budget items', (done) => {
       chai.request(app)
@@ -74,16 +78,14 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-      db.budget.addItem(budget).then((err, budget) => {
+      db.budget.addItem(budget).then((budget) => {
         chai.request(app)
           .put('/api/budget/' + budget._id)
           .send({name: 'Spending', type: 'PERCENT', amount: 10})
           .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.book.should.have.property('name').eql('Spending');
-            res.body.book.should.have.property('type').eql('PERCENT');
-            res.body.book.should.have.property('amount').eql(10);
+            res.body.should.be.a('number');
+            res.body.should.eql(1);
             done();
           });
       })
@@ -95,10 +97,10 @@ describe('Budget', () => {
     it('it should DELETE a book given the id', (done) => {
       const budget = {
         name: "Savings",
-        type: VALUE,
+        type: 'VALUE',
         amount: 10,
       };
-      db.budget.addItem(budget).then((err, budget) => {
+      db.budget.addItem(budget).then((budget) => {
         chai.request(app)
           .delete('/api/budget/' + budget._id)
           .end((err, res) => {
@@ -107,7 +109,8 @@ describe('Budget', () => {
             res.body.should.eql(1);
             done();
           });
-        });
+        })
+        .catch(done);
       });
   });
 });
