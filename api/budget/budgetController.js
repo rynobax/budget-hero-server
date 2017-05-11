@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const {getBudget} = require('../../db');
+const {budget} = require('../../db');
 const {respond} = require('../response');
 
 router.post('/', function (req, res) {
-  respond(res, addBudgetItem(req.body.item));
+  respond(res, budget.addItem(req.body.item));
 });
 
 router.get('/', function (req, res) {
-  respond(res, getBudgetItems());
+  respond(res, budget.getItems());
 });
 
 router.put('/:id', function (req, res) {
-  respond(res, updateBudgetItem(req.params.id, req.body.item));
+  respond(res, budget.updateItem(req.params.id, req.body.item));
 });
 
 router.delete('/:id', function (req, res) {
-  respond(res, deleteBudgetItem(req.params.id));
+  respond(res, budget.deleteItem(req.params.id));
 });
 
 module.exports.BudgetController = router;
