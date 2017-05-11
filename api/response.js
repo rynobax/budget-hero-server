@@ -6,6 +6,6 @@ module.exports.respond = function(res, data) {
     }))
     .catch((e) => res.json({
       success: false,
-      data: e
+      error: e
     }))
 }
