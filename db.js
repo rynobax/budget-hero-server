@@ -21,9 +21,9 @@ budget.addItem = function(item){
   });
 }
 
-budget.updateItem = function(item){
+budget.updateItem = function(id, item){
   return new Promise((resolve, reject) => {
-    db.update({_id: item._id}, item, {}, function (err, numReplaced) {
+    db.update({_id: id}, item, {}, function (err, numReplaced) {
       if(err) reject(err);
       else resolve(numReplaced);
     });
