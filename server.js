@@ -18,3 +18,5 @@ module.exports.start = function(port) {
    console.log('Proxy API listening on port ', port);
   });
 }
+
+module.exports.app = app;
