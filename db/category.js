@@ -47,5 +47,5 @@ module.exports = function(db){
     });
   }
   
-  return cateogry;
+  return category;
 }
