@@ -29,7 +29,7 @@ describe('Budget', () => {
         type: VALUE,
         amount: 500,
         period: MONTHLY
-      }
+      };
       chai.request(app)
         .post('/budget')
         .send(budget)
@@ -43,47 +43,46 @@ describe('Budget', () => {
         done();
       });
     });
-      it('it should POST a percentage budget item', (done) => {
-        let budget = {
-            name: "Savings",
-            type: VALUE,
-            amount: 10,
-        }
-            chai.request(app)
-            .post('/book')
-            .send(book)
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property('message').eql('Book successfully added!');
-                res.body.book.should.have.property('title');
-                res.body.book.should.have.property('author');
-                res.body.book.should.have.property('pages');
-                res.body.book.should.have.property('year');
-              done();
-            });
+  it('it should POST a percentage budget item', (done) => {
+    const budget = {
+      name: "Savings",
+      type: VALUE,
+      amount: 10,
+    };
+    chai.request(app)
+      .post('/budget')
+      .send(budget)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('name');
+        res.body.should.have.property('type');
+        res.body.should.have.property('amount');
+        done();
       });
-      // TODO: Category testing
+    });
+    // TODO: Category testing
   });
   describe('/PUT/:id book', () => {
       it('it should UPDATE a budget item given the id', (done) => {
-        let budget = {
+        const budget = {
             name: "Savings",
             type: VALUE,
             amount: 10,
         }
-        book.save((err, book) => {
-                chai.request(app)
-                .put('/book/' + book.id)
-                .send({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1950, pages: 778})
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('message').eql('Book updated!');
-                    res.body.book.should.have.property('year').eql(1950);
-                  done();
-                });
-          });
+        db.budget.addItem(budget).then((err, budget) => {
+          chai.request(app)
+            .put('/book/' + book.id)
+            .send({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1950, pages: 778})
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message').eql('Book updated!');
+              res.body.book.should.have.property('year').eql(1950);
+              done();
+            });
+        })
+        .catch(done);
       });
   });
  /*
