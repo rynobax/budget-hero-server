@@ -23,27 +23,26 @@ describe('Budget', () => {
       });
     });
   describe('/POST budget', () => {
-      it('it should POST a value budget item', (done) => {
-        let budget = {
-            name: "Rent",
-            type: VALUE,
-            amount: 500,
-            period: MONTHLY
-        }
-            chai.request(app)
-            .post('/book')
-            .send(book)
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property('message').eql('Book successfully added!');
-                res.body.book.should.have.property('title');
-                res.body.book.should.have.property('author');
-                res.body.book.should.have.property('pages');
-                res.body.book.should.have.property('year');
-              done();
-            });
+    it('it should POST a value budget item', (done) => {
+      const budget = {
+        name: "Rent",
+        type: VALUE,
+        amount: 500,
+        period: MONTHLY
+      }
+      chai.request(app)
+        .post('/budget')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('name');
+          res.body.should.have.property('type');
+          res.body.should.have.property('amount');
+          res.body.should.have.property('period');
+        done();
       });
+    });
       it('it should POST a percentage budget item', (done) => {
         let budget = {
             name: "Savings",
