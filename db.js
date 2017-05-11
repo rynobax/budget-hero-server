@@ -39,7 +39,7 @@ budget.deleteItem = function(id){
   });
 }
 
-budget.truncateTable = function(id){
+budget.truncateTable = function(){
   return new Promise((resolve, reject) => {
     db.remove({}, function (err, numRemoved) {
       if(err) reject(err);
