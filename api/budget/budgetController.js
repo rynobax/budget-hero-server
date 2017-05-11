@@ -12,7 +12,7 @@ router.get('/', function (req, res) {
 });
 
 router.put('/:id', function (req, res) {
-  respond(res, updateBudgetItem(req.body.item));
+  respond(res, updateBudgetItem(req.params.id, req.body.item));
 });
 
 router.delete('/:id', function (req, res) {
