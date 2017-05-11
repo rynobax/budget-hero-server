@@ -25,13 +25,13 @@ describe('Budget', () => {
   describe('/POST budget', () => {
     it('it should POST a value budget item', (done) => {
       const budget = {
-        name: "Rent",
-        type: VALUE,
+        name: 'Rent',
+        type: 'VALUE',
         amount: 500,
-        period: MONTHLY
+        period: 'MONTHLY'
       };
       chai.request(app)
-        .post('/budget')
+        .post('/api/budget')
         .send(budget)
         .end((err, res) => {
           res.should.have.status(200);
@@ -45,12 +45,12 @@ describe('Budget', () => {
     });
   it('it should POST a percentage budget item', (done) => {
     const budget = {
-      name: "Savings",
-      type: VALUE,
+      name: 'Savings',
+      type: 'PERCENT',
       amount: 10,
     };
     chai.request(app)
-      .post('/budget')
+      .post('/api/budget')
       .send(budget)
       .end((err, res) => {
         res.should.have.status(200);
@@ -63,22 +63,24 @@ describe('Budget', () => {
     });
     // TODO: Category testing
   });
-  describe('/PUT/:id book', () => {
+  describe('/PUT/:id budget', () => {
       it('it should UPDATE a budget item given the id', (done) => {
         const budget = {
-            name: "Savings",
-            type: VALUE,
-            amount: 10,
+          name: 'Savings',
+          type: 'VALUE',
+          amount: 10,
+          period: 'WEEKLY' 
         }
         db.budget.addItem(budget).then((err, budget) => {
           chai.request(app)
-            .put('/book/' + book.id)
-            .send({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1950, pages: 778})
+            .put('/api/budget/' + budget._id)
+            .send({name: 'Spending', type: 'PERCENT', amount: 10})
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('message').eql('Book updated!');
-              res.body.book.should.have.property('year').eql(1950);
+              res.body.book.should.have.property('name').eql('Spending');
+              res.body.book.should.have.property('type').eql('PERCENT');
+              res.body.book.should.have.property('amount').eql(10);
               done();
             });
         })
