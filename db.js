@@ -1,7 +1,9 @@
 var Datastore = require('nedb');
 const db = new Datastore({ filename: 'db/data.db', autoload: true });
 
-module.exports.budget.getItems = function(){
+const budget = {};
+
+budget.getItems = function(){
   return new Promise((resolve, reject) => {
     db.find({}, function (err, items) {
       if(err) reject(err);
@@ -10,7 +12,7 @@ module.exports.budget.getItems = function(){
   });
 }
 
-module.exports.budget.addItem = function(item){
+budget.addItem = function(item){
   return new Promise((resolve, reject) => {
     db.insert(item, function (err, newItem) {
       if(err) reject(err);
@@ -19,7 +21,7 @@ module.exports.budget.addItem = function(item){
   });
 }
 
-module.exports.budget.updateItem = function(item){
+budget.updateItem = function(item){
   return new Promise((resolve, reject) => {
     db.update({_id: item._id}, item, {}, function (err, numReplaced) {
       if(err) reject(err);
@@ -28,7 +30,7 @@ module.exports.budget.updateItem = function(item){
   });
 }
 
-module.exports.budget.deleteItem = function(id){
+budget.deleteItem = function(id){
   return new Promise((resolve, reject) => {
     db.remove({_id: id}, function (err, numRemoved) {
       if(err) reject(err);
@@ -37,11 +39,15 @@ module.exports.budget.deleteItem = function(id){
   });
 }
 
-module.exports.budget.truncateTable = function(id){
+budget.truncateTable = function(id){
   return new Promise((resolve, reject) => {
     db.remove({}, function (err, numRemoved) {
       if(err) reject(err);
       else resolve(numRemoved);
     });
   });
+}
+
+module.exports = {
+  budget: budget
 }
