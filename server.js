@@ -11,7 +11,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 module.exports.start = function(port) {
   app.use('/api', APIController);
   return app.listen(port, () => {
