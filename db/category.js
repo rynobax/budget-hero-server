@@ -77,5 +77,18 @@ module.exports = function(Datastore, dbPath, budgetDB){
     });
   }
   
+  function testInit() {
+    const categories = [];
+    categories.push({name: 'Utilities'});
+    categories.push({name: 'Food'});
+    categories.push({name: 'Luxery'});
+    category.truncateTable().then(() => {
+      categories.forEach((e) => {
+        category.addItem(e);
+      });
+    });
+  }
+  testInit();
+  
   return category;
 }
