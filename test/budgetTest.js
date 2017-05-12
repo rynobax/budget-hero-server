@@ -67,6 +67,7 @@ describe('Budget', () => {
           done();
         });
     });
+    // TODO: No repeat names
     // TODO: Category testing
   });
   

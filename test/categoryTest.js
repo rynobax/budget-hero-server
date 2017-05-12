@@ -48,6 +48,7 @@ describe('Category', (done) => {
           done();
         });
     });
+    // TODO: No repeat names
   });
   
   describe('/PUT/:id category', () => {
