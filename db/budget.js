@@ -46,20 +46,5 @@ module.exports = function(db){
     });
   }
   
-/* Testing */
-budget.truncateTable().then(() => {
-  budget.addItem({
-    name: 'Rent',
-    amount: '500',
-    period: 'MONTH'
-  });
-  budget.addItem({
-    name: 'Utilities',
-    amount: '50',
-    period: 'MONTH'
-  });
-});
-
-
   return budget;
 }

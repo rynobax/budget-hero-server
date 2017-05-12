@@ -1,0 +1,16 @@
+{"name":"Rent","type":"VALUE","amount":500,"period":"MONTHLY","_id":"sj17rnQjY923ssWa"}
+{"$$deleted":true,"_id":"sj17rnQjY923ssWa"}
+{"name":"Savings","type":"PERCENT","amount":10,"_id":"EvhbDJ8y6fCkFbjt"}
+{"$$deleted":true,"_id":"EvhbDJ8y6fCkFbjt"}
+{"name":"Savings","type":"VALUE","amount":10,"period":"WEEKLY","_id":"KXqci89CIMrq5qqP"}
+{"name":"Spending","type":"PERCENT","amount":10,"_id":"KXqci89CIMrq5qqP"}
+{"$$deleted":true,"_id":"KXqci89CIMrq5qqP"}
+{"name":"Savings","type":"VALUE","amount":10,"_id":"Ode0HOvdE577s1Vv"}
+{"$$deleted":true,"_id":"Ode0HOvdE577s1Vv"}
+{"name":"Rent","type":"VALUE","amount":500,"period":"MONTHLY","_id":"Jc5tKcVjTB7wsstA"}
+{"$$deleted":true,"_id":"Jc5tKcVjTB7wsstA"}
+{"name":"Savings","type":"VALUE","amount":10,"period":"WEEKLY","_id":"tUmzD9ZRHIucrpxo"}
+{"name":"Spending","type":"PERCENT","amount":10,"_id":"tUmzD9ZRHIucrpxo"}
+{"$$deleted":true,"_id":"tUmzD9ZRHIucrpxo"}
+{"name":"Savings","type":"VALUE","amount":10,"_id":"ntOcQmaMP5osyUCM"}
+{"$$deleted":true,"_id":"ntOcQmaMP5osyUCM"}
