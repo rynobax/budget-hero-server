@@ -67,8 +67,43 @@ describe('Budget', () => {
           done();
         });
     });
-    // TODO: No repeat names
-    // TODO: Category testing
+    
+    it('it should NOT POST an item with an identical name', (done) => {
+      const budget = {
+        name: 'Savings',
+        type: 'PERCENT',
+        amount: 10,
+      };
+      const repeatBudget = {
+        name: 'Savings',
+        type: 'VALUE',
+        amount: 10,
+      };
+      db.budget.addItem(budget).then(() => {
+        chai.request(app)
+          .post('/api/budget')
+          .send(repeatBudget)
+          .end((err, res) => {
+            res.should.have.status(500);
+            done();
+          });
+      });
+    });
+    
+    it('it should NOT POST an item with no name', (done) => {
+      const budget = {
+        name: '',
+        type: 'PERCENT',
+        amount: 10,
+      };
+      chai.request(app)
+        .post('/api/budget')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(500);
+          done();
+        });
+    });
   });
   
   describe('/PUT/:id budget', () => {
@@ -87,6 +122,26 @@ describe('Budget', () => {
             res.should.have.status(200);
             res.body.should.be.a('number');
             res.body.should.eql(1);
+            done();
+          });
+      })
+      .catch(done);
+    });
+
+    it('it should NOT UPDATE a budget with no name', (done) => {
+      const budget = {
+        name: 'Savings',
+        type: 'VALUE',
+        amount: 10,
+        period: 'WEEKLY' 
+      };
+
+      db.budget.addItem(budget).then((budget) => {
+        chai.request(app)
+          .put('/api/budget/' + budget._id)
+          .send({name: '', type: 'PERCENT', amount: 10})
+          .end((err, res) => {
+            res.should.have.status(500);
             done();
           });
       })

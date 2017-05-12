@@ -1,4 +1,7 @@
-module.exports = function(db){
+module.exports = function(Datastore, dbPath){
+  const db = new Datastore({ filename: dbPath+'budget.db', autoload: true });
+  db.ensureIndex({ fieldName: 'name', unique: true }, function (err) {});
+
   const budget = {};
   
   budget.getItems = function(){
@@ -12,6 +15,9 @@ module.exports = function(db){
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
+      if(item.name == ''){
+        reject('Name required');
+      }
       db.insert(item, function (err, newItem) {
         if(err) reject(err);
         else resolve(newItem);
@@ -21,6 +27,9 @@ module.exports = function(db){
 
   budget.updateItem = function(id, item){
     return new Promise((resolve, reject) => {
+      if(item.name == ''){
+        reject('Name required');
+      }
       db.update({_id: id}, item, {}, function (err, numReplaced) {
         if(err) reject(err);
         else resolve(numReplaced);
@@ -45,6 +54,15 @@ module.exports = function(db){
       });
     });
   }
-  
+
+  budget.cleanDeadCategory = function(id){
+    return new Promise((resolve, reject) => {
+      db.remove({category: id}, { multi: true }, function (err, numRemoved) {
+        if(err) reject(err);
+        else resolve(numRemoved);
+      });
+    });
+  }
+
   return budget;
 }

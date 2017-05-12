@@ -10,8 +10,9 @@ process.env.NODE_ENV = 'test';
 describe('Category', (done) => {
   beforeEach((done) => {
     db.category.truncateTable()
-    .then(() => done())
-    .catch(done);
+      .then(db.budget.truncateTable)
+      .then(() => done())
+      .catch(done);
   });
   
   describe('/GET category', () => {
@@ -30,10 +31,7 @@ describe('Category', (done) => {
   describe('/POST budget', () => {
     it('it should POST a category item', (done) => {
       const category = {
-        name: 'Rent',
-        type: 'VALUE',
-        amount: 500,
-        period: 'MONTHLY'
+        name: 'Rent'
       };
       chai.request(app)
         .post('/api/category')
@@ -42,27 +40,61 @@ describe('Category', (done) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('name');
-          res.body.should.have.property('type');
-          res.body.should.have.property('amount');
-          res.body.should.have.property('period');
           done();
         });
     });
-    // TODO: No repeat names
+
+    it('it should NOT POST a category item with no name', (done) => {
+      const category = {
+        name: ''
+      };
+      chai.request(app)
+        .post('/api/category')
+        .send(category)
+        .end((err, res) => {
+          res.should.have.status(500);
+          done();
+        });
+    });
+
+    it('it should NOT POST a category item with an identical name', (done) => {
+      const category = {
+        name: 'Utilities'
+      };
+      db.category.addItem(category).then(() => {
+        chai.request(app)
+          .post('/api/category')
+          .send(category)
+          .end((err, res) => {
+            res.should.have.status(500);
+            done();
+          });
+      });
+    });
+
+    it('it should NOT POST a category item with the reserved name ' + db.category.NO_CATEGORY_NAME, (done) => {
+      const category = {
+        name: db.category.NO_CATEGORY_NAME
+      };
+      chai.request(app)
+        .post('/api/category')
+        .send(category)
+        .end((err, res) => {
+          res.should.have.status(500);
+          done();
+        });
+    });
   });
   
   describe('/PUT/:id category', () => {
     it('it should UPDATE a category item given the id', (done) => {
       const category = {
-        name: 'Savings',
-        type: 'VALUE',
-        amount: 10,
-        period: 'WEEKLY' 
+        name: 'Savings'
       }
       db.category.addItem(category).then((category) => {
         chai.request(app)
           .put('/api/category/' + category._id)
-          .send({name: 'Spending', type: 'PERCENT', amount: 10})
+          .send({name: 'Spending'})
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('number');
@@ -72,14 +104,44 @@ describe('Category', (done) => {
       })
       .catch(done);
     });
+
+    it('it should NOT UPDATE a category to no name', (done) => {
+      const category = {
+        name: 'Savings'
+      }
+      db.category.addItem(category).then((category) => {
+        chai.request(app)
+          .put('/api/category/' + category._id)
+          .send({name: ''})
+          .end((err, res) => {
+            res.should.have.status(500);
+            done();
+          });
+      })
+      .catch(done);
+    });
+
+    it('it should NOT UPDATE a category with the reserved name ' + db.category.NO_CATEGORY_NAME, (done) => {
+      const category = {
+        name: 'Savings'
+      }
+      db.category.addItem(category).then((category) => {
+        chai.request(app)
+          .put('/api/category/' + category._id)
+          .send({name: db.category.NO_CATEGORY_NAME})
+          .end((err, res) => {
+            res.should.have.status(500);
+            done();
+          });
+      })
+      .catch(done);
+    });
   });
   
   describe('/DELETE/:id category', () => {
-    it('it should DELETE a categoy given the id', (done) => {
+    it('it should DELETE a category given the id', (done) => {
       const category = {
-        name: "Savings",
-        type: 'VALUE',
-        amount: 10,
+        name: 'Savings'
       };
       db.category.addItem(category).then((category) => {
         chai.request(app)
@@ -90,6 +152,51 @@ describe('Category', (done) => {
             res.body.should.eql(1);
             done();
           });
+      })
+      .catch(done);
+    });
+
+    it('it should remove not leave dangling category references', (done) => {
+      const category = {
+        name: 'Savings'
+      };
+      db.category.addItem(category).then((category) => {
+        const savingsId = category._id;
+        const budget1 = {
+          name: 'Savings',
+          type: 'PERCENT',
+          amount: 10,
+          category: savingsId
+        };
+        const budget2 = {
+          name: 'Spending',
+          type: 'PERCENT',
+          amount: 20,
+          category: 'SpendingID'
+        };
+        Promise.all([db.budget.addItem(budget1), db.budget.addItem(budget2)])
+          .then(() => {
+            chai.request(app)
+              .delete('/api/category/' + savingsId)
+              .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('number');
+                res.body.should.eql(1);
+                db.budget.getItems().then((items) => {
+                  items.forEach((item) => {
+                    if(item.name == 'Savings'){
+                      item.should.be.a('object');
+                      item.should.not.have.property('category');
+                    }else{
+                      item.should.be.a('object');
+                      item.should.have.property('category');
+                    }
+                  });
+                  done();
+                })
+                .catch(done);
+              });
+        });
       })
       .catch(done);
     });

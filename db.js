@@ -1,13 +1,14 @@
-var Datastore = require('nedb');
-
-let dbName = 'data';
-if(process.env.NODE_ENV=='test') dbName = 'test';
-
-const db = new Datastore({ filename: 'db/'+dbName+'.db', autoload: true });
+const Datastore = require('nedb');
 const budget = require('./db/budget');
 const category = require('./db/category');
 
+let dbPath = 'db/prod/';
+if(process.env.NODE_ENV=='test') dbPath = 'db/test/';
+
+const budgetDB = budget(Datastore, dbPath);
+const categoryDB = category(Datastore, dbPath, budgetDB);
+
 module.exports = {
-  budget: budget(db),
-  category: category(db)
+  budget: budgetDB,
+  category: categoryDB
 }
