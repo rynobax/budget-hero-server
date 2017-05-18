@@ -1,4 +1,10 @@
+{"name":"Food","_id":"2RnJAwe2szxUrJVW"}
+{"name":"Utilities","_id":"G14S7yAyVgrTHt60"}
+{"name":"Luxery","_id":"aEZAT7l3Vhw7WNhp"}
 {"$$indexCreated":{"fieldName":"name","unique":true,"sparse":false}}
-{"name":"Utilities","_id":"s2QmJGrk4hmRD4c4"}
-{"name":"Food","_id":"438VwUNe55wCXuQr"}
-{"name":"Luxery","_id":"GwAr0lLDsOhCVOSL"}
+{"$$deleted":true,"_id":"2RnJAwe2szxUrJVW"}
+{"$$deleted":true,"_id":"G14S7yAyVgrTHt60"}
+{"$$deleted":true,"_id":"aEZAT7l3Vhw7WNhp"}
+{"name":"Utilities","_id":"c1h4V0XHYQxoE6Fo"}
+{"name":"Food","_id":"RJWSWIT835PGWWrU"}
+{"name":"Luxery","_id":"LTOA59gjeI7xo6cp"}

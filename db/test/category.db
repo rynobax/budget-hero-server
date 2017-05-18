@@ -1,22 +1,24 @@
 {"$$indexCreated":{"fieldName":"name","unique":true,"sparse":false}}
-{"name":"Rent","_id":"hjIVRiRkay19x6XN"}
-{"$$deleted":true,"_id":"hjIVRiRkay19x6XN"}
-{"name":"","_id":"NXIL1OlPwlLFpYJv"}
-{"$$deleted":true,"_id":"NXIL1OlPwlLFpYJv"}
-{"name":"Utilities","_id":"IWpBgslYIq0W4c2y"}
-{"$$deleted":true,"_id":"IWpBgslYIq0W4c2y"}
-{"name":"No Category","_id":"oQctqXl5sP9IFhsh"}
-{"$$deleted":true,"_id":"oQctqXl5sP9IFhsh"}
-{"name":"Savings","_id":"MOFn7LAsIhPoJYjL"}
-{"name":"Spending","_id":"MOFn7LAsIhPoJYjL"}
-{"$$deleted":true,"_id":"MOFn7LAsIhPoJYjL"}
-{"name":"Savings","_id":"0ZdKU1Br8t760gmc"}
-{"name":"","_id":"0ZdKU1Br8t760gmc"}
-{"$$deleted":true,"_id":"0ZdKU1Br8t760gmc"}
-{"name":"Savings","_id":"J8pLTPcI7KbI31G6"}
-{"name":"No Category","_id":"J8pLTPcI7KbI31G6"}
-{"$$deleted":true,"_id":"J8pLTPcI7KbI31G6"}
-{"name":"Savings","_id":"84b1dnA94iKgCjZx"}
-{"$$deleted":true,"_id":"84b1dnA94iKgCjZx"}
-{"name":"Savings","_id":"qgBpgJoiW0IgNUZs"}
-{"$$deleted":true,"_id":"qgBpgJoiW0IgNUZs"}
+{"name":"Utilities","_id":"zWVPEfHjDswhcJNt"}
+{"$$deleted":true,"_id":"zWVPEfHjDswhcJNt"}
+{"name":"Rent","_id":"yBT7ZKjtHEUke6BW"}
+{"$$deleted":true,"_id":"yBT7ZKjtHEUke6BW"}
+{"name":"","_id":"fo8438RKHHLXxurg"}
+{"$$deleted":true,"_id":"fo8438RKHHLXxurg"}
+{"name":"Utilities","_id":"M8MsYKOR2VFTUzpV"}
+{"$$deleted":true,"_id":"M8MsYKOR2VFTUzpV"}
+{"name":"No Category","_id":"Q6JpDaDCWPRsUTR4"}
+{"$$deleted":true,"_id":"Q6JpDaDCWPRsUTR4"}
+{"name":"Savings","_id":"FpqDpg0LECq2iInP"}
+{"name":"Spending","_id":"FpqDpg0LECq2iInP"}
+{"$$deleted":true,"_id":"FpqDpg0LECq2iInP"}
+{"name":"Savings","_id":"92ZmXqBY9FHltrwt"}
+{"name":"","_id":"92ZmXqBY9FHltrwt"}
+{"$$deleted":true,"_id":"92ZmXqBY9FHltrwt"}
+{"name":"Savings","_id":"YD3RagEoZVBDmOF9"}
+{"name":"No Category","_id":"YD3RagEoZVBDmOF9"}
+{"$$deleted":true,"_id":"YD3RagEoZVBDmOF9"}
+{"name":"Savings","_id":"wBx4cZqmAsteW6Do"}
+{"$$deleted":true,"_id":"wBx4cZqmAsteW6Do"}
+{"name":"Savings","_id":"OYuhNoV7LuLflFU0"}
+{"$$deleted":true,"_id":"OYuhNoV7LuLflFU0"}

@@ -16,15 +16,19 @@ describe('Category', (done) => {
   });
   
   describe('/GET category', () => {
-    it('it should GET all the category items', (done) => {
-      chai.request(app)
-        .get('/api/category')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(0);
-          done();
-        });
+    it('it should GET all the category items', (done) => {const category = {
+        name: 'Utilities'
+      };
+      db.category.addItem(category).then(() => {
+        chai.request(app)
+          .get('/api/category')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(1);
+            done();
+          });
+      });
     });
   });
   
@@ -69,7 +73,8 @@ describe('Category', (done) => {
             res.should.have.status(500);
             done();
           });
-      });
+      })
+      .catch(console.error);
     });
 
     it('it should NOT POST a category item with the reserved name ' + db.category.NO_CATEGORY_NAME, (done) => {

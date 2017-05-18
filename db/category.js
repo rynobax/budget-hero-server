@@ -70,7 +70,7 @@ module.exports = function(Datastore, dbPath, budgetDB){
 
   category.truncateTable = function(){
     return new Promise((resolve, reject) => {
-      db.remove({}, function (err, numRemoved) {
+      db.remove({}, { multi: true }, function (err, numRemoved) {
         if(err) reject(err);
         else resolve(numRemoved);
       });
@@ -82,13 +82,13 @@ module.exports = function(Datastore, dbPath, budgetDB){
     categories.push({name: 'Utilities'});
     categories.push({name: 'Food'});
     categories.push({name: 'Luxery'});
-    category.truncateTable().then(() => {
+    category.truncateTable().then((n) => {
       categories.forEach((e) => {
-        category.addItem(e);
+        category.addItem(e).catch(console.error);
       });
     });
   }
-  testInit();
+  if(process.env.NODE_ENV!='test') testInit();
   
   return category;
 }
