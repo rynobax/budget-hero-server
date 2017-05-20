@@ -1,1 +1,16 @@
+{"category":"2DGJnatUzZXbpdAB","name":"Saving","amount":"25","type":"PERCENT","_id":"RDK3mhaHHuly6kQ3"}
+{"category":"5LXIQzcCfVFGd3ba","name":"Internet","amount":"75","type":"VALUE","period":"MONTHLY","_id":"UbIxTwop7UoXzGP9"}
+{"category":"5LXIQzcCfVFGd3ba","name":"Electrial","amount":"20","type":"VALUE","period":"MONTHLY","_id":"aePUU67pZKx5xHLS"}
+{"category":"5LXIQzcCfVFGd3ba","name":"Water","amount":"50","type":"VALUE","period":"MONTHLY","_id":"kDjtMcFWTxnUDkf3"}
+{"category":"2DGJnatUzZXbpdAB","name":"Spending","amount":"15","type":"PERCENT","_id":"kZUhbL9sNyfzK5AY"}
 {"$$indexCreated":{"fieldName":"name","unique":true,"sparse":false}}
+{"$$deleted":true,"_id":"RDK3mhaHHuly6kQ3"}
+{"$$deleted":true,"_id":"UbIxTwop7UoXzGP9"}
+{"$$deleted":true,"_id":"aePUU67pZKx5xHLS"}
+{"$$deleted":true,"_id":"kDjtMcFWTxnUDkf3"}
+{"$$deleted":true,"_id":"kZUhbL9sNyfzK5AY"}
+{"category":"iH9PEtysvyraa5Rv","name":"Water","amount":"50","type":"VALUE","period":"MONTHLY","_id":"2N5uobcdRzzRZc0Q"}
+{"category":"iH9PEtysvyraa5Rv","name":"Electrial","amount":"20","type":"VALUE","period":"MONTHLY","_id":"uxiVsQwdi9sltM5w"}
+{"category":"iH9PEtysvyraa5Rv","name":"Internet","amount":"75","type":"VALUE","period":"MONTHLY","_id":"txFAv71OZ9pwqieU"}
+{"category":"qLifbraryadJGCvh","name":"Spending","amount":"15","type":"PERCENT","_id":"bjdzMxbfr1CRpKdo"}
+{"category":"qLifbraryadJGCvh","name":"Saving","amount":"25","type":"PERCENT","_id":"WklGjo0LI6je3EJg"}

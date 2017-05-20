@@ -12,6 +12,15 @@ module.exports = function(Datastore, dbPath){
       });
     });
   }
+  
+  budget.getItemsOfCategory = function(categoryId){
+    return new Promise((resolve, reject) => {
+      db.find({category: categoryId}, function (err, items) {
+        if(err) reject(err);
+        else resolve(items);
+      });
+    });
+  }
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
@@ -49,15 +58,6 @@ module.exports = function(Datastore, dbPath){
   budget.truncateTable = function(){
     return new Promise((resolve, reject) => {
       db.remove({}, { multi: true }, function (err, numRemoved) {
-        if(err) reject(err);
-        else resolve(numRemoved);
-      });
-    });
-  }
-
-  budget.cleanDeadCategory = function(id){
-    return new Promise((resolve, reject) => {
-      db.remove({category: id}, { multi: true }, function (err, numRemoved) {
         if(err) reject(err);
         else resolve(numRemoved);
       });

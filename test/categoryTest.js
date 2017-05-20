@@ -76,19 +76,6 @@ describe('Category', (done) => {
       })
       .catch(console.error);
     });
-
-    it('it should NOT POST a category item with the reserved name ' + db.category.NO_CATEGORY_NAME, (done) => {
-      const category = {
-        name: db.category.NO_CATEGORY_NAME
-      };
-      chai.request(app)
-        .post('/api/category')
-        .send(category)
-        .end((err, res) => {
-          res.should.have.status(500);
-          done();
-        });
-    });
   });
   
   describe('/PUT/:id category', () => {
@@ -161,7 +148,7 @@ describe('Category', (done) => {
       .catch(done);
     });
 
-    it('it should remove not leave dangling category references', (done) => {
+    it('it should NOT DELETE a category with items in it', (done) => {
       const category = {
         name: 'Savings'
       };
@@ -184,22 +171,8 @@ describe('Category', (done) => {
             chai.request(app)
               .delete('/api/category/' + savingsId)
               .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('number');
-                res.body.should.eql(1);
-                db.budget.getItems().then((items) => {
-                  items.forEach((item) => {
-                    if(item.name == 'Savings'){
-                      item.should.be.a('object');
-                      item.should.not.have.property('category');
-                    }else{
-                      item.should.be.a('object');
-                      item.should.have.property('category');
-                    }
-                  });
-                  done();
-                })
-                .catch(done);
+                res.should.have.status(500);
+                done();
               });
         });
       })

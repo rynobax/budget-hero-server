@@ -3,17 +3,6 @@ module.exports = function(Datastore, dbPath, budgetDB){
   db.ensureIndex({ fieldName: 'name', unique: true }, function (err) {});
 
   const category = {};
-
-  category.NO_CATEGORY_NAME = 'No Category';
-  
-  category.getItem = function(id){
-    return new Promise((resolve, reject) => {
-      db.find({_id: id}, function (err, items) {
-        if(err) reject(err);
-        else resolve(items[0]);
-      });
-    });
-  }
   
   category.getItems = function(){
     return new Promise((resolve, reject) => {
@@ -28,9 +17,6 @@ module.exports = function(Datastore, dbPath, budgetDB){
     return new Promise((resolve, reject) => {
       if(item.name == ''){
         reject('Name required');
-      }
-      if(item.name == category.NO_CATEGORY_NAME){
-        reject('Reserved name');
       }
       db.insert(item, function (err, newItem) {
         if(err) reject(err);
@@ -56,15 +42,18 @@ module.exports = function(Datastore, dbPath, budgetDB){
 
   category.deleteItem = function(id){
     return new Promise((resolve, reject) => {
-      db.remove({_id: id}, function (err, numRemoved) {
-        if(err) reject(err);
-        else{
-          budgetDB.cleanDeadCategory(id).then(() =>{
-            resolve(numRemoved);
-          })
-          .catch(reject);
-        }
-      });
+      budgetDB.getItemsOfCategory(id)
+        .then((items) => {
+          if(items.length == 0){
+            db.remove({_id: id}, function (err, numRemoved) {
+              if(err) reject(err);
+              else resolve(numRemoved);
+            });
+          } else {
+            reject('Category not empty');
+          }
+        })
+        .catch(reject);
     });
   }
 
@@ -76,19 +65,6 @@ module.exports = function(Datastore, dbPath, budgetDB){
       });
     });
   }
-  
-  function testInit() {
-    const categories = [];
-    categories.push({name: 'Utilities'});
-    categories.push({name: 'Food'});
-    categories.push({name: 'Luxery'});
-    category.truncateTable().then((n) => {
-      categories.forEach((e) => {
-        category.addItem(e).catch(console.error);
-      });
-    });
-  }
-  if(process.env.NODE_ENV!='test') testInit();
   
   return category;
 }
