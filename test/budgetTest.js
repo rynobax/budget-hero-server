@@ -31,6 +31,7 @@ describe('Budget', () => {
     it('it should POST a value budget item', (done) => {
       const budget = {
         name: 'Rent',
+        category: 'Bill',
         type: 'VALUE',
         amount: 500,
         period: 'MONTHLY'
@@ -52,6 +53,7 @@ describe('Budget', () => {
     it('it should POST a percentage budget item', (done) => {
       const budget = {
         name: 'Savings',
+        category: 'Personal',
         type: 'PERCENT',
         amount: 10,
       };
@@ -71,11 +73,13 @@ describe('Budget', () => {
     it('it should NOT POST an item with an identical name', (done) => {
       const budget = {
         name: 'Savings',
+        category: 'Personal',
         type: 'PERCENT',
         amount: 10,
       };
       const repeatBudget = {
         name: 'Savings',
+        category: 'Personal',
         type: 'VALUE',
         amount: 10,
       };
@@ -92,7 +96,22 @@ describe('Budget', () => {
     
     it('it should NOT POST an item with no name', (done) => {
       const budget = {
-        name: '',
+        category: 'Personal',
+        type: 'PERCENT',
+        amount: 10,
+      };
+      chai.request(app)
+        .post('/api/budget')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(500);
+          done();
+        });
+    });
+    
+    it('it should NOT POST an item with no category', (done) => {
+      const budget = {
+        name: 'A name',
         type: 'PERCENT',
         amount: 10,
       };
@@ -110,6 +129,7 @@ describe('Budget', () => {
     it('it should UPDATE a budget item given the id', (done) => {
       const budget = {
         name: 'Savings',
+        category: 'Personal',
         type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
@@ -117,7 +137,7 @@ describe('Budget', () => {
       db.budget.addItem(budget).then((budget) => {
         chai.request(app)
           .put('/api/budget/' + budget._id)
-          .send({name: 'Spending', type: 'PERCENT', amount: 10})
+          .send({name: 'Spending', category: 'Personal', type: 'PERCENT', amount: 10, period: 'WEEKLY'})
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('number');
@@ -131,6 +151,7 @@ describe('Budget', () => {
     it('it should NOT UPDATE a budget with no name', (done) => {
       const budget = {
         name: 'Savings',
+        category: 'Personal',
         type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
@@ -139,7 +160,7 @@ describe('Budget', () => {
       db.budget.addItem(budget).then((budget) => {
         chai.request(app)
           .put('/api/budget/' + budget._id)
-          .send({name: '', type: 'PERCENT', amount: 10})
+          .send({name: '', category: 'Personal', type: 'PERCENT', amount: 10})
           .end((err, res) => {
             res.should.have.status(500);
             done();
@@ -153,6 +174,7 @@ describe('Budget', () => {
     it('it should DELETE a book given the id', (done) => {
       const budget = {
         name: "Savings",
+        category: 'Personal',
         type: 'VALUE',
         amount: 10,
       };

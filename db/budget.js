@@ -24,8 +24,11 @@ module.exports = function(Datastore, dbPath){
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
-      if(item.name == ''){
+      if(item.name == '' || item.name == undefined){
         reject('Name required');
+      }
+      if(item.category == '' || item.category == undefined){
+        reject('Category required');
       }
       db.insert(item, function (err, newItem) {
         if(err) reject(err);
@@ -36,8 +39,11 @@ module.exports = function(Datastore, dbPath){
 
   budget.updateItem = function(id, item){
     return new Promise((resolve, reject) => {
-      if(item.name == ''){
+      if(item.name == '' || item.name == undefined){
         reject('Name required');
+      }
+      if(item.category == '' || item.category == undefined){
+        reject('Category required');
       }
       db.update({_id: id}, item, {}, function (err, numReplaced) {
         if(err) reject(err);

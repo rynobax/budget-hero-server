@@ -1,31 +1,22 @@
 const Datastore = require('nedb');
 const budget = require('./db/budget');
-const category = require('./db/category');
 
 let dbPath = 'nedbFiles/prod/';
 if(process.env.NODE_ENV=='test') dbPath = 'nedbFiles/test/';
 
 const budgetDB = budget(Datastore, dbPath);
-const categoryDB = category(Datastore, dbPath, budgetDB);
 
 module.exports = {
-  budget: budgetDB,
-  category: categoryDB
+  budget: budgetDB
 }
 
 if(process.env.NODE_ENV!='test') devInit();
 function devInit(){
-  Promise.all([categoryDB.truncateTable(), budgetDB.truncateTable()]).then((res) => {
-    categoryDB.addItem({name: 'Utilities'}).then(e => {
-      const id = e._id;
-      budgetDB.addItem({category: id, name: 'Water', amount: '50', type: 'VALUE', period: 'MONTHLY'});
-      budgetDB.addItem({category: id, name: 'Electrial', amount: '20', type: 'VALUE', period: 'MONTHLY'});
-      budgetDB.addItem({category: id, name: 'Internet', amount: '75', type: 'VALUE', period: 'MONTHLY'});
+    budgetDB.truncateTable().then(() => {
+      budgetDB.addItem({category: 'Utilities', name: 'Water', amount: '50', type: 'VALUE', period: 'MONTHLY'});
+      budgetDB.addItem({category: 'Utilities', name: 'Electrial', amount: '20', type: 'VALUE', period: 'MONTHLY'});
+      budgetDB.addItem({category: 'Utilities', name: 'Internet', amount: '75', type: 'VALUE', period: 'MONTHLY'});
+      budgetDB.addItem({category: 'Personal', name: 'Spending', amount: '15', type: 'PERCENT'});
+      budgetDB.addItem({category: 'Personal', name: 'Saving', amount: '25', type: 'PERCENT'});
     });
-    categoryDB.addItem({name: 'Personal'}).then(e => {
-      const id = e._id;
-      budgetDB.addItem({category: id, name: 'Spending', amount: '15', type: 'PERCENT'});
-      budgetDB.addItem({category: id, name: 'Saving', amount: '25', type: 'PERCENT'});
-    });
-  });
 }
