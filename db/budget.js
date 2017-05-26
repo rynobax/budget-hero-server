@@ -32,6 +32,16 @@ module.exports = function(Datastore, dbPath){
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
+      requiredParams = ['name', 'category', 'period', 'amount'];
+      requiredParams.forEach((param) => {
+        if(item[param] == undefined) {
+          resolve({
+            added: false,
+            error: 'Missing param: ' + param
+          })
+          return;
+        }
+      });
       db.find({name: item.name}, (err, items) => {
         if(err) resolve({
           added: false,
@@ -44,6 +54,7 @@ module.exports = function(Datastore, dbPath){
           })
         } else {
           db.insert(item, function (err, newItem) {
+            console.log('err: ', err);
             if(err) reject(err);
             else resolve({
               added: true,
