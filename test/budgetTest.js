@@ -16,14 +16,38 @@ describe('Budget', () => {
   
   describe('/GET budget', () => {
     it('it should GET all the budget items', (done) => {
-      chai.request(app)
-        .get('/api/budget')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(0);
-          done();
-        });
+      const budget = {
+        name: 'Savings',
+        category: 'Personal',
+        type: 'VALUE',
+        amount: 10,
+        period: 'WEEKLY' 
+      };
+      const budget2 = {
+        name: 'Spending',
+        category: 'Personal',
+        type: 'VALUE',
+        amount: 10,
+        period: 'WEEKLY' 
+      };
+      db.budget.addItem(budget).then(db.budget.addItem(budget2)).then(() => {
+        chai.request(app)
+          .get('/api/budget')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            const category = res.body[0];
+            category.should.be.a('object');
+            category.name.should.eql('Personal');
+            category.items.should.be.a('array');
+            category.items.length.should.eql(2);
+            const item = category.items[0];
+            item.should.have.property('name');
+            item.should.have.property('amount');
+            done();
+          });
+      })
+      .catch(done);
     });
   });
   
@@ -42,10 +66,9 @@ describe('Budget', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('name');
-          res.body.should.have.property('type');
-          res.body.should.have.property('amount');
-          res.body.should.have.property('period');
+          res.body.should.have.property('added');
+          res.body.should.have.property('item');
+          res.body.added.should.eql(true);
         done();
       });
     });
@@ -63,9 +86,9 @@ describe('Budget', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('name');
-          res.body.should.have.property('type');
-          res.body.should.have.property('amount');
+          res.body.should.have.property('added');
+          res.body.should.have.property('item');
+          res.body.added.should.eql(true);
           done();
         });
     });
@@ -88,40 +111,13 @@ describe('Budget', () => {
           .post('/api/budget')
           .send(repeatBudget)
           .end((err, res) => {
-            res.should.have.status(500);
+            res.should.have.status(200);
+            res.body.should.have.property('added');
+            res.body.should.have.property('error');
+            res.body.added.should.eql(false);
             done();
           });
       });
-    });
-    
-    it('it should NOT POST an item with no name', (done) => {
-      const budget = {
-        category: 'Personal',
-        type: 'PERCENT',
-        amount: 10,
-      };
-      chai.request(app)
-        .post('/api/budget')
-        .send(budget)
-        .end((err, res) => {
-          res.should.have.status(500);
-          done();
-        });
-    });
-    
-    it('it should NOT POST an item with no category', (done) => {
-      const budget = {
-        name: 'A name',
-        type: 'PERCENT',
-        amount: 10,
-      };
-      chai.request(app)
-        .post('/api/budget')
-        .send(budget)
-        .end((err, res) => {
-          res.should.have.status(500);
-          done();
-        });
     });
   });
   
@@ -140,15 +136,16 @@ describe('Budget', () => {
           .send({name: 'Spending', category: 'Personal', type: 'PERCENT', amount: 10, period: 'WEEKLY'})
           .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('number');
-            res.body.should.eql(1);
+            res.body.should.be.a('object');
+            res.body.should.have.property('updated');
+            res.body.updated.should.eql(true);
             done();
           });
       })
       .catch(done);
     });
 
-    it('it should NOT UPDATE a budget with no name', (done) => {
+    it('it should NOT UPDATE a budget item to an identical name', (done) => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
@@ -156,17 +153,28 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-
-      db.budget.addItem(budget).then((budget) => {
-        chai.request(app)
-          .put('/api/budget/' + budget._id)
-          .send({name: '', category: 'Personal', type: 'PERCENT', amount: 10})
-          .end((err, res) => {
-            res.should.have.status(500);
-            done();
-          });
-      })
-      .catch(done);
+      const repeatBudget = {
+        name: 'Spending',
+        category: 'Personal',
+        type: 'VALUE',
+        amount: 10,
+        period: 'WEEKLY' 
+      };
+      db.budget.addItem(repeatBudget).then(() => {
+        db.budget.addItem(budget).then((budget) => {
+          chai.request(app)
+            .put('/api/budget/' + budget._id)
+            .send({name: 'Spending', category: 'Personal', type: 'PERCENT', amount: 10, period: 'WEEKLY'})
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('updated');
+              res.body.should.have.property('error');
+              res.body.updated.should.eql(false);
+              done();
+            });
+        });
+      }).catch(done);
     });
   });
 
@@ -183,8 +191,8 @@ describe('Budget', () => {
           .delete('/api/budget/' + budget._id)
           .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('number');
-            res.body.should.eql(1);
+            res.body.should.have.property('deleted');
+            res.body.deleted.should.eql(true);
             done();
           });
         })

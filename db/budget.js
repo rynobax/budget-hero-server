@@ -8,46 +8,76 @@ module.exports = function(Datastore, dbPath){
     return new Promise((resolve, reject) => {
       db.find({}, function (err, items) {
         if(err) reject(err);
-        else resolve(items);
-      });
-    });
-  }
-  
-  budget.getItemsOfCategory = function(categoryId){
-    return new Promise((resolve, reject) => {
-      db.find({category: categoryId}, function (err, items) {
-        if(err) reject(err);
-        else resolve(items);
+        else resolve(
+          items.reduce((arr, item) => {
+            const category = item.category;
+            delete item.category;
+            delete item.id;
+            for(const addedCategory of arr){
+              if(addedCategory.name == category){
+                addedCategory.items.push(item);
+                return arr;
+              }
+            }
+            arr.push({
+              name: category,
+              items: [item]
+            });
+            return arr;
+          }, [])
+        );
       });
     });
   }
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
-      if(item.name == '' || item.name == undefined){
-        reject('Name required');
-      }
-      if(item.category == '' || item.category == undefined){
-        reject('Category required');
-      }
-      db.insert(item, function (err, newItem) {
-        if(err) reject(err);
-        else resolve(newItem);
+      db.find({name: item.name}, (err, items) => {
+        if(err) resolve({
+          added: false,
+          error: err
+        });
+        if(items.length > 0){
+          resolve({
+            added: false,
+            error: 'An item of that name already exists'
+          })
+        } else {
+          db.insert(item, function (err, newItem) {
+            if(err) reject(err);
+            else resolve({
+              added: true,
+              item: newItem
+            });
+          });
+        }
       });
     });
   }
 
   budget.updateItem = function(id, item){
     return new Promise((resolve, reject) => {
-      if(item.name == '' || item.name == undefined){
-        reject('Name required');
-      }
-      if(item.category == '' || item.category == undefined){
-        reject('Category required');
-      }
-      db.update({_id: id}, item, {}, function (err, numReplaced) {
-        if(err) reject(err);
-        else resolve(numReplaced);
+      db.find({name: item.name}, (err, items) => {
+        if(err) resolve({
+          updated: false,
+          error: err
+        });
+        if(items.length > 0){
+          resolve({
+            updated: false,
+            error: 'An item of that name already exists'
+          })
+        } else {
+          db.update({_id: id}, item, {}, function (err, numReplaced) {
+            if(err) resolve({
+              updated: false,
+              error: err
+            });
+            else resolve({
+              updated: true
+            });
+          });
+        }
       });
     });
   }
@@ -55,8 +85,13 @@ module.exports = function(Datastore, dbPath){
   budget.deleteItem = function(id){
     return new Promise((resolve, reject) => {
       db.remove({_id: id}, function (err, numRemoved) {
-        if(err) reject(err);
-        else resolve(numRemoved);
+        if(err) resolve({
+          deleted: false,
+          error: err
+        });
+        else resolve({
+          deleted: true
+        });
       });
     });
   }
