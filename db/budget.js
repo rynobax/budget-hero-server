@@ -13,10 +13,10 @@ module.exports = function(Datastore, dbPath){
     const errors = [];
     requiredParams.forEach((param) => {
       if(item[param] == undefined) {
-        errors.push('Missing param: ' + param);
+        errors.push('Missing paramameter ' + param);
       }
       else if(item[param] == '') {
-        errors.push(param + ' cannot be empty: ');
+        errors.push(param + ' cannot be empty');
       }
     });
     return errors;
