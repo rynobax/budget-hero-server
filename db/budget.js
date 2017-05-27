@@ -5,20 +5,21 @@ module.exports = function(Datastore, dbPath){
   const budget = {};
 
   function validateParams(item){
-      const requiredParams = ['name', 'category', 'amount', 'type'];
-      if('type' == 'VALUE'){
-        requiredParams.push('period');
+    console.log('item: ', item);
+    const requiredParams = ['name', 'category', 'amount', 'type'];
+    if('type' == 'VALUE'){
+      requiredParams.push('period');
+    }
+    const errors = [];
+    requiredParams.forEach((param) => {
+      if(item[param] == undefined) {
+        errors.push('Missing param: ' + param);
       }
-      const errors = [];
-      requiredParams.forEach((param) => {
-        if(item[param] == undefined) {
-          errors.push('Missing param: ' + param);
-        }
-        else if(item[param] == '') {
-          errors.push(param + ' cannot be empty: ');
-        }
-      });
-      return errors;
+      else if(item[param] == '') {
+        errors.push(param + ' cannot be empty: ');
+      }
+    });
+    return errors;
   }
   
   budget.getItems = function(){
