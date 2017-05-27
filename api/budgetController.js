@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {budget} = require('../../db');
-const {respond} = require('../response');
+const {budget} = require('../db');
+const {respond} = require('./response');
 
 router.post('/', function (req, res) {
   respond(res, budget.addItem(req.body));

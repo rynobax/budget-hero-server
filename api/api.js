@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {UserController} = require('./user/userController');
-const {BudgetController} = require('./budget/budgetController');
+const {UserController} = require('./userController');
+const {BudgetController} = require('./budgetController');
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));

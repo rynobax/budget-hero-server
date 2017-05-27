@@ -3,6 +3,23 @@ module.exports = function(Datastore, dbPath){
   db.ensureIndex({ fieldName: 'name', unique: true }, function (err) {});
 
   const budget = {};
+
+  function validateParams(item){
+      const requiredParams = ['name', 'category', 'amount', 'type'];
+      if('type' == 'VALUE'){
+        requiredParams.push('period');
+      }
+      const errors = [];
+      requiredParams.forEach((param) => {
+        if(item[param] == undefined) {
+          errors.push('Missing param: ' + param);
+        }
+        else if(item[param] == '') {
+          errors.push(param + ' cannot be empty: ');
+        }
+      });
+      return errors;
+  }
   
   budget.getItems = function(){
     return new Promise((resolve, reject) => {
@@ -32,16 +49,11 @@ module.exports = function(Datastore, dbPath){
 
   budget.addItem = function(item){
     return new Promise((resolve, reject) => {
-      requiredParams = ['name', 'category', 'period', 'amount'];
-      requiredParams.forEach((param) => {
-        if(item[param] == undefined) {
-          resolve({
-            added: false,
-            error: 'Missing param: ' + param
-          })
-          return;
-        }
-      });
+      const errors = validateParams(item);
+      if(errors.length > 0) {
+        resolve({added: false, error: errors.join('\n')});
+        return;
+      }
       db.find({name: item.name}, (err, items) => {
         if(err) resolve({
           added: false,
@@ -54,7 +66,6 @@ module.exports = function(Datastore, dbPath){
           })
         } else {
           db.insert(item, function (err, newItem) {
-            console.log('err: ', err);
             if(err) reject(err);
             else resolve({
               added: true,
@@ -68,6 +79,11 @@ module.exports = function(Datastore, dbPath){
 
   budget.updateItem = function(id, item){
     return new Promise((resolve, reject) => {
+      const errors = validateParams(item);
+      if(errors.length > 0) {
+        resolve({updated: false, error: errors.join('\n')});
+        return;
+      }
       db.find({name: item.name}, (err, items) => {
         if(err) resolve({
           updated: false,

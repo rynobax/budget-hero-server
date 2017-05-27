@@ -119,6 +119,45 @@ describe('Budget', () => {
           });
       });
     });
+    
+    it('it should NOT POST a budget item with name missing', (done) => {
+      const budget = {
+        category: 'Personal',
+        type: 'PERCENT',
+        amount: 10,
+      };
+      chai.request(app)
+        .post('/api/budget')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('added');
+          res.body.should.have.property('error');
+          res.body.added.should.eql(false);
+          done();
+        });
+    });
+    
+    it('it should NOT POST a budget item with an empty name', (done) => {
+      const budget = {
+        name: '',
+        category: 'Personal',
+        type: 'PERCENT',
+        amount: 10,
+      };
+      chai.request(app)
+        .post('/api/budget')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('added');
+          res.body.should.have.property('error');
+          res.body.added.should.eql(false);
+          done();
+        });
+    });
   });
   
   describe('/PUT/:id budget', () => {
@@ -175,6 +214,36 @@ describe('Budget', () => {
             });
         });
       }).catch(done);
+    });
+
+    it('it should NOT UPDATE a budget item with an empty name', (done) => {
+      const budget = {
+        name: 'Spending',
+        category: 'Personal',
+        type: 'VALUE',
+        amount: 10,
+        period: 'WEEKLY' 
+      };
+      const replacementBudget = {
+        name: '', 
+        category: 'Personal', 
+        type: 'PERCENT', 
+        amount: 10, 
+        period: 'WEEKLY'
+      };
+      db.budget.addItem(budget).then((budget) => {
+        chai.request(app)
+          .put('/api/budget/' + budget._id)
+          .send(replacementBudget)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('updated');
+            res.body.updated.should.eql(false);
+            done();
+          });
+      })
+      .catch(done);
     });
   });
 
