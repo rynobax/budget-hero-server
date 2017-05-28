@@ -5,11 +5,7 @@ module.exports = function(Datastore, dbPath){
   const budget = {};
 
   function validateParams(item){
-    console.log('item: ', item);
-    const requiredParams = ['name', 'category', 'amount', 'type'];
-    if('type' == 'VALUE'){
-      requiredParams.push('period');
-    }
+    const requiredParams = ['name', 'category', 'amount', 'period'];
     const errors = [];
     requiredParams.forEach((param) => {
       if(item[param] == undefined) {

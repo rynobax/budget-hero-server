@@ -19,14 +19,12 @@ describe('Budget', () => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
       const budget2 = {
         name: 'Spending',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
@@ -56,7 +54,6 @@ describe('Budget', () => {
       const budget = {
         name: 'Rent',
         category: 'Bill',
-        type: 'VALUE',
         amount: 500,
         period: 'MONTHLY'
       };
@@ -77,7 +74,7 @@ describe('Budget', () => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'PERCENT',
+        period: 'PERCENT',
         amount: 10,
       };
       chai.request(app)
@@ -97,13 +94,12 @@ describe('Budget', () => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'PERCENT',
+        period: 'PERCENT',
         amount: 10,
       };
       const repeatBudget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
       };
       db.budget.addItem(budget).then(() => {
@@ -123,8 +119,8 @@ describe('Budget', () => {
     it('it should NOT POST a budget item with name missing', (done) => {
       const budget = {
         category: 'Personal',
-        type: 'PERCENT',
         amount: 10,
+        period: 'WEEKLY'
       };
       chai.request(app)
         .post('/api/budget')
@@ -143,7 +139,7 @@ describe('Budget', () => {
       const budget = {
         name: '',
         category: 'Personal',
-        type: 'PERCENT',
+        period: 'PERCENT',
         amount: 10,
       };
       chai.request(app)
@@ -165,14 +161,13 @@ describe('Budget', () => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
       db.budget.addItem(budget).then((budget) => {
         chai.request(app)
           .put('/api/budget/' + budget._id)
-          .send({name: 'Spending', category: 'Personal', type: 'PERCENT', amount: 10, period: 'WEEKLY'})
+          .send({name: 'Spending', category: 'Personal', amount: 10, period: 'PERCENT'})
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
@@ -188,14 +183,12 @@ describe('Budget', () => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
       const repeatBudget = {
         name: 'Spending',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
@@ -203,7 +196,7 @@ describe('Budget', () => {
         db.budget.addItem(budget).then((budget) => {
           chai.request(app)
             .put('/api/budget/' + budget._id)
-            .send({name: 'Spending', category: 'Personal', type: 'PERCENT', amount: 10, period: 'WEEKLY'})
+            .send({name: 'Spending', category: 'Personal', amount: 10, period: 'WEEKLY'})
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
@@ -220,16 +213,14 @@ describe('Budget', () => {
       const budget = {
         name: 'Spending',
         category: 'Personal',
-        type: 'VALUE',
         amount: 10,
         period: 'WEEKLY' 
       };
       const replacementBudget = {
         name: '', 
         category: 'Personal', 
-        type: 'PERCENT', 
         amount: 10, 
-        period: 'WEEKLY'
+        period: 'PERCENT'
       };
       db.budget.addItem(budget).then((budget) => {
         chai.request(app)
@@ -252,7 +243,7 @@ describe('Budget', () => {
       const budget = {
         name: "Savings",
         category: 'Personal',
-        type: 'VALUE',
+        period: 'MONTHLY',
         amount: 10,
       };
       db.budget.addItem(budget).then((budget) => {
