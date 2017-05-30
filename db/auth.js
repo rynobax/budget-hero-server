@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 
 module.exports = function(Datastore, dbPath){
+  const tokenDB = require('./token')(Datastore, dbPath);
   const db = new Datastore({ filename: dbPath+'auth.db', autoload: true });
   db.ensureIndex({ fieldName: 'username', unique: true }, function (err) {});
   const auth = {};

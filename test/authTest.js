@@ -82,4 +82,30 @@ describe('Auth', () => {
         });
     });
   });
+
+  it('it should let you logout', (done) => {
+    const user = {
+      username: 'User',
+      password: 'supersecretpassword'
+    };
+    chai.request(app)
+      .post('/api/auth/register')
+      .send(user)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('registered');
+        res.body.registered.should.eql(true);
+        chai.request(app)
+          .post('/api/auth/login')
+          .send(user)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('loggedIn');
+            res.body.loggedIn.should.eql(true);
+            done();
+        });
+    });
+  });
 });
