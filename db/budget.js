@@ -1,6 +1,5 @@
 module.exports = function(Datastore, dbPath){
   const db = new Datastore({ filename: dbPath+'budget.db', autoload: true });
-  db.ensureIndex({ fieldName: 'name', unique: true }, function (err) {});
 
   const budget = {};
 

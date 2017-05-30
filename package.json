@@ -10,10 +10,12 @@
   "author": "Ryan Baxley",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "morgan": "^1.8.1",
-    "nedb": "^1.8.0"
+    "nedb": "^1.8.0",
+    "passport": "^0.3.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

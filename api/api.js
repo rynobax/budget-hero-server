@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {UserController} = require('./userController');
-const {BudgetController} = require('./budgetController');
+const {AuthController} = require('./AuthController');
+const {BudgetController} = require('./BudgetController');
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
-router.use('/user', UserController);
+router.use('/auth', AuthController);
 router.use('/budget', BudgetController);
 router.get('/', (req, res) => {
   res.send('Api Root');

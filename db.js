@@ -1,13 +1,16 @@
 const Datastore = require('nedb');
 const budget = require('./db/budget');
+const auth = require('./db/auth');
 
 let dbPath = 'nedbFiles/prod/';
 if(process.env.NODE_ENV=='test') dbPath = 'nedbFiles/test/';
 
 const budgetDB = budget(Datastore, dbPath);
+const authDB = auth(Datastore, dbPath);
 
 module.exports = {
-  budget: budgetDB
+  budget: budgetDB,
+  auth: authDB
 }
 
 if(process.env.NODE_ENV!='test') devInit();

@@ -3,13 +3,13 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const should = chai.should();
 const app = require('../server').app;
-const db = require('../db');
+const budgetDB = require('../db').budget;
 
 process.env.NODE_ENV = 'test';
 
 describe('Budget', () => {
   beforeEach((done) => {
-    db.budget.truncateTable()
+    budgetDB.truncateTable()
       .then(() => done())
       .catch(done);
   });
@@ -28,7 +28,7 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-      db.budget.addItem(budget).then(db.budget.addItem(budget2)).then(() => {
+      budgetDB.addItem(budget).then(budgetDB.addItem(budget2)).then(() => {
         chai.request(app)
           .get('/api/budget')
           .end((err, res) => {
@@ -102,7 +102,7 @@ describe('Budget', () => {
         category: 'Personal',
         amount: 10,
       };
-      db.budget.addItem(budget).then(() => {
+      budgetDB.addItem(budget).then(() => {
         chai.request(app)
           .post('/api/budget')
           .send(repeatBudget)
@@ -164,9 +164,9 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-      db.budget.addItem(budget).then((budget) => {
+      budgetDB.addItem(budget).then((budget) => {
         chai.request(app)
-          .put('/api/budget/' + budget._id)
+          .put('/api/budget/' + budgetDB._id)
           .send({name: 'Spending', category: 'Personal', amount: 10, period: 'PERCENT'})
           .end((err, res) => {
             res.should.have.status(200);
@@ -192,10 +192,10 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-      db.budget.addItem(repeatBudget).then(() => {
-        db.budget.addItem(budget).then((budget) => {
+      budgetDB.addItem(repeatBudget).then(() => {
+        budgetDB.addItem(budget).then((budget) => {
           chai.request(app)
-            .put('/api/budget/' + budget._id)
+            .put('/api/budget/' + budgetDB._id)
             .send({name: 'Spending', category: 'Personal', amount: 10, period: 'WEEKLY'})
             .end((err, res) => {
               res.should.have.status(200);
@@ -222,9 +222,9 @@ describe('Budget', () => {
         amount: 10, 
         period: 'PERCENT'
       };
-      db.budget.addItem(budget).then((budget) => {
+      budgetDB.addItem(budget).then((budget) => {
         chai.request(app)
-          .put('/api/budget/' + budget._id)
+          .put('/api/budget/' + budgetDB._id)
           .send(replacementBudget)
           .end((err, res) => {
             res.should.have.status(200);
@@ -246,9 +246,9 @@ describe('Budget', () => {
         period: 'MONTHLY',
         amount: 10,
       };
-      db.budget.addItem(budget).then((budget) => {
+      budgetDB.addItem(budget).then((budget) => {
         chai.request(app)
-          .delete('/api/budget/' + budget._id)
+          .delete('/api/budget/' + budgetDB._id)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.have.property('deleted');
