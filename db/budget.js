@@ -17,9 +17,9 @@ module.exports = function(Datastore, dbPath){
     return errors;
   }
   
-  budget.getItems = function(){
+  budget.getItems = function(username){
     return new Promise((resolve, reject) => {
-      db.find({}, function (err, items) {
+      db.find({username: username}, function (err, items) {
         if(err) reject(err);
         else resolve(
           items.reduce((arr, item) => {
@@ -43,14 +43,14 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.addItem = function(item){
+  budget.addItem = function(username, item){
     return new Promise((resolve, reject) => {
       const errors = validateParams(item);
       if(errors.length > 0) {
         resolve({added: false, error: errors.join('\n')});
         return;
       }
-      db.find({name: item.name}, (err, items) => {
+      db.find({username: username, name: item.name}, (err, items) => {
         if(err) resolve({
           added: false,
           error: err
@@ -61,6 +61,7 @@ module.exports = function(Datastore, dbPath){
             error: 'An item of that name already exists'
           })
         } else {
+          item = Object.assign({}, item, {username: username});
           db.insert(item, function (err, newItem) {
             if(err) reject(err);
             else resolve({
@@ -73,14 +74,14 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.updateItem = function(id, item){
+  budget.updateItem = function(username, id, item){
     return new Promise((resolve, reject) => {
       const errors = validateParams(item);
       if(errors.length > 0) {
         resolve({updated: false, error: errors.join('\n')});
         return;
       }
-      db.find({name: item.name}, (err, items) => {
+      db.find({username: username, name: item.name}, (err, items) => {
         if(err) resolve({
           updated: false,
           error: err
@@ -91,6 +92,7 @@ module.exports = function(Datastore, dbPath){
             error: 'An item of that name already exists'
           })
         } else {
+          item = Object.assign({}, item, {username: username});
           db.update({_id: id}, item, {}, function (err, numReplaced) {
             if(err) resolve({
               updated: false,
@@ -105,9 +107,9 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.deleteItem = function(id){
+  budget.deleteItem = function(username, id){
     return new Promise((resolve, reject) => {
-      db.remove({_id: id}, function (err, numRemoved) {
+      db.remove({username: username, _id: id}, function (err, numRemoved) {
         if(err) resolve({
           deleted: false,
           error: err

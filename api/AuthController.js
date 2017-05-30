@@ -4,11 +4,11 @@ const {auth} = require('../db');
 const {respond} = require('./response');
 
 router.post('/login', (req, res) => {
-  respond(res, auth.login(req.body.username, req.body.password));
+  respond(res, auth.login(req.body.username, req.body.password, res));
 });
 
 router.post('/logout', (req, res) => {
-  respond(res, auth.logout());
+  respond(res, auth.logout(req.body.token, res));
 });
 
 router.post('/register', (req, res) => {
