@@ -10,6 +10,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cookieParser('mysecretkey'));
 router.use('/auth', AuthController);
 router.use('/budget', function (req, res, next) {
+  console.log('User-Agent: ' + req.headers['user-agent'])
   if(!req.signedCookies.token){
     res.status(401).send('No token included!');
     return;
