@@ -22,4 +22,7 @@ function devInit(){
       budgetDB.addItem('rynobax', {category: 'Personal', name: 'Spending', amount: '15', period: 'PERCENT'});
       budgetDB.addItem('rynobax', {category: 'Personal', name: 'Saving', amount: '25', period: 'PERCENT'});
     });
+    authDB.truncateTable().then(() => {
+      authDB.register('rynobax', 'password');
+    });
 }
