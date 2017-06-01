@@ -8,20 +8,31 @@ const auth = require('../db').auth;
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cookieParser('mysecretkey'));
+
+// cors
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 router.use('/auth', AuthController);
+
+// Get username of request
 router.use('/budget', function (req, res, next) {
-  console.log('User-Agent: ' + req.headers['user-agent'])
   if(!req.signedCookies.token){
     res.status(401).send('No token included!');
     return;
   }
-  const username = auth.verify(req.signedCookies.token);
-  if(username == null){
-    res.status(401).send('Invalid or expired token');
-    return;
-  }
-  req.username = username;
-  next();
+  const username = auth.verify(req.signedCookies.token).then((username) => {
+    if(username == null){
+      res.status(401).send('Invalid or expired token');
+      return;
+    }
+    req.username = username;
+    next();
+  });
 });
 router.use('/budget', BudgetController);
 router.get('/', (req, res) => {

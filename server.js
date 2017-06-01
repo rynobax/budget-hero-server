@@ -17,7 +17,7 @@ app.use('/api', APIController);
 
 module.exports.start = function(port) {
   return app.listen(port, () => {
-   console.log('Proxy API listening on port ', port);
+   console.log('Proxy API listening on port ' + port);
   });
 }
 

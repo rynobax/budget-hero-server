@@ -81,7 +81,7 @@ module.exports = function(Datastore, dbPath){
 
   auth.login = function(username, password, res){
     return new Promise((resolve, reject) => {
-      username = username.toUpperCase();
+      if(username) username = username.toUpperCase();
       getUser(username).then((user) => {
         if(user == null){
           resolve({
@@ -103,6 +103,7 @@ module.exports = function(Datastore, dbPath){
             } else {
               token.add(username).then((tok) => {
                 res.cookie('token', tok, {signed: true});
+                res.cookie('unsigned', tok);
                 resolve({
                   loggedIn: true
                 });

@@ -19,6 +19,7 @@ module.exports = function(Datastore, dbPath){
   
   budget.getItems = function(username){
     return new Promise((resolve, reject) => {
+      username = username.toUpperCase();
       db.find({username: username}, function (err, items) {
         if(err) reject(err);
         else resolve(
@@ -50,6 +51,7 @@ module.exports = function(Datastore, dbPath){
         resolve({added: false, error: errors.join('\n')});
         return;
       }
+      username = username.toUpperCase();
       db.find({username: username, name: item.name}, (err, items) => {
         if(err) resolve({
           added: false,
@@ -81,6 +83,7 @@ module.exports = function(Datastore, dbPath){
         resolve({updated: false, error: errors.join('\n')});
         return;
       }
+      username = username.toUpperCase();
       db.find({username: username, name: item.name}, (err, items) => {
         if(err) resolve({
           updated: false,
@@ -109,6 +112,7 @@ module.exports = function(Datastore, dbPath){
 
   budget.deleteItem = function(username, id){
     return new Promise((resolve, reject) => {
+      username = username.toUpperCase();
       db.remove({username: username, _id: id}, function (err, numRemoved) {
         if(err) resolve({
           deleted: false,

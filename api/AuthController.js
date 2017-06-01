@@ -8,11 +8,15 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  respond(res, auth.logout(req.body.token, res));
+  respond(res, auth.logout(req.signedCookies.token, res));
 });
 
 router.post('/register', (req, res) => {
   respond(res, auth.register(req.body.username, req.body.password));
-})
+});
+
+router.post('/identity', (req, res) => {
+  respond(res, auth.identity(req.signedCookies.token));
+});
 
 module.exports.AuthController = router;
