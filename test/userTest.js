@@ -2,9 +2,9 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const should = chai.should();
-const app = require('../server').app;
-const userDB = require('../db').user;
-const tokenDB = require('../db').token;
+const app = require('../src/app').app;
+const userDB = require('../src/db').user;
+const tokenDB = require('../src/db').token;
 
 process.env.NODE_ENV = 'test';
 
