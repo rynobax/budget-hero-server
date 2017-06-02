@@ -7,7 +7,7 @@ const budgetDB = require('../db').budget;
 const authDB = require('../db').auth;
 
 process.env.NODE_ENV = 'test';
-
+/*
 describe('Budget', () => {
   const agent = chai.request.agent(app);
   before((done) => {
@@ -27,6 +27,7 @@ describe('Budget', () => {
     })
   });
   beforeEach((done) => {
+    console.log(budgetDB);
     budgetDB.truncateTable()
       .then(() => {
         done();
@@ -285,3 +286,4 @@ describe('Budget', () => {
     });
   });
 });
+*/

@@ -4,7 +4,6 @@ module.exports = function(Datastore, dbPath){
   const token = require('./token')(Datastore, dbPath);
   const db = new Datastore({ filename: dbPath+'auth.db', autoload: true });
   db.ensureIndex({ fieldName: 'username', unique: true }, function (err) {});
-  const auth = {};
   
   function getUsers(){
     return new Promise((resolve, reject) => {
@@ -27,7 +26,7 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  auth.register = function(username, password){
+  function register(username, password){
     return new Promise((resolve, reject) => {
       const errors = [];
 
@@ -79,7 +78,7 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  auth.login = function(username, password, res){
+  function login(username, password, res){
     return new Promise((resolve, reject) => {
       if(username) username = username.toUpperCase();
       getUser(username).then((user) => {
@@ -120,7 +119,7 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  auth.logout = function(tok){
+  function logout(tok){
     return new Promise((resolve, reject) => {
       token.remove(tok).then(() => {
         res.clearCookie('token');
@@ -136,13 +135,13 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  auth.verify = function(tok){
+  function verify(tok){
     return new Promise((resolve, reject) => {
       resolve(token.check(tok));
     });
   }
 
-  auth.truncateTable = function(){
+  function truncateTable(){
     return new Promise((resolve, reject) => {
       db.remove({}, { multi: true }, function (err, numRemoved) {
         if(err) reject(err);
@@ -151,5 +150,11 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  return auth;
+  return {
+    register: register,
+    login: login,
+    logout: logout,
+    verify: verify,
+    truncateTable: truncateTable
+  }
 }

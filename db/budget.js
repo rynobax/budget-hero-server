@@ -1,10 +1,44 @@
-module.exports = function(Datastore, dbPath){
-  const db = new Datastore({ filename: dbPath+'budget.db', autoload: true });
+module.exports = function(dynamoose){
+  const Schema = dynamoose.Schema;
+  const budgetSchema = new Schema({
+    category: {
+      type: String,
+      uppercase: true,
+      trim: true,
+      required: true,
+      rangeKey: true
+    },
+    name: {
+      type: String,
+      uppercase: true,
+      trim: true,
+      required: true,
+      rangeKey: true
+    },
+    amount: {
+      type: Number,
+      required: true
+    },
+    period: {
+      type: String,
+      required: true
+    },
+    username: {
+      type: String,
+      uppercase: true,
+      trim: true,
+      required: true,
+      hashKey: true
+    },
+    income: {
+      type: Boolean,
+      rangeKey: true
+    }
+  });
 
-  const budget = {};
+  const BudgetItem = dynamoose.model('BudgetItem', budgetSchema);
 
-  function validateParams(item){
-    const requiredParams = ['name', 'category', 'amount', 'period'];
+  function validateParams(item, requiredParams){
     const errors = [];
     requiredParams.forEach((param) => {
       if(item[param] == undefined) {
@@ -16,8 +50,8 @@ module.exports = function(Datastore, dbPath){
     });
     return errors;
   }
-  
-  budget.getItems = function(username){
+
+  function getItems(username){
     return new Promise((resolve, reject) => {
       username = username.toUpperCase();
       db.find({username: username}, function (err, items) {
@@ -44,41 +78,30 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.addItem = function(username, item){
+  function addItem(username, item){
     return new Promise((resolve, reject) => {
-      const errors = validateParams(item);
+      const errors = validateParams(item, ['name', 'category', 'amount', 'period']);
       if(errors.length > 0) {
         resolve({added: false, error: errors.join('\n')});
         return;
       }
-      username = username.toUpperCase();
-      db.find({username: username, name: item.name}, (err, items) => {
-        if(err) resolve({
-          added: false,
-          error: err
-        });
-        if(items.length > 0){
-          resolve({
-            added: false,
-            error: 'An item of that name already exists'
-          })
-        } else {
-          item = Object.assign({}, item, {username: username});
-          db.insert(item, function (err, newItem) {
-            if(err) reject(err);
-            else resolve({
-              added: true,
-              item: newItem
-            });
-          });
-        }
+      item = Object.assign(item, {username: username});
+      const newItem = BudgetItem(item);
+      console.log('newItem.username: ', newItem.username);
+      BudgetItem.get({username: item.username.toUpperCase(), name: item.name.toUpperCase()}, (err, existingItem) => {
+        if(err) { console.log(err); return reject(err); }
+        console.log('existingItem: ', existingItem);
+        newItem.save((err) => {
+          if(err) { console.log(err); return reject(err); }
+          else resolve({added: true, item: item});
+        })
       });
     });
   }
 
-  budget.updateItem = function(username, id, item){
+  function updateItem(username, id, item){
     return new Promise((resolve, reject) => {
-      const errors = validateParams(item);
+      const errors = validateParams(item, ['name', 'category', 'amount', 'period']);
       if(errors.length > 0) {
         resolve({updated: false, error: errors.join('\n')});
         return;
@@ -110,7 +133,7 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.deleteItem = function(username, id){
+  function deleteItem(username, id){
     return new Promise((resolve, reject) => {
       username = username.toUpperCase();
       db.remove({username: username, _id: id}, function (err, numRemoved) {
@@ -125,14 +148,20 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  budget.truncateTable = function(){
+  function truncateTable(){
     return new Promise((resolve, reject) => {
-      db.remove({}, { multi: true }, function (err, numRemoved) {
+      dynamoose.ddb().deleteTable({TableName: 'BudgetItem'}, (err, data) => {
         if(err) reject(err);
-        else resolve(numRemoved);
-      });
+        else resolve(data);
+      })
     });
   }
 
-  return budget;
+  return {
+    getItems: getItems,
+    addItem: addItem,
+    updateItem: updateItem,
+    deleteItem: deleteItem,
+    truncateTable: truncateTable
+  }
 }
