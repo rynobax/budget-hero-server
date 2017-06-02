@@ -1,12 +1,20 @@
-const Datastore = require('nedb');
+const dynamoose = require('dynamoose');
 const budget = require('./db/budget');
 const auth = require('./db/auth');
 
-let dbPath = 'nedbFiles/prod/';
-if(process.env.NODE_ENV=='test') dbPath = 'nedbFiles/test/';
+dynamoose.local();
+dynamoose.AWS.config.update({
+  accessKeyId: 'AKID',
+  secretAccessKey: 'SECRET',
+  region: 'us-east-1'
+});
+dynamoose.setDefaults({
+  create: true, // Create table in DB if it does not exist
+  waitForActive: true
+});
 
-const budgetDB = budget(Datastore, dbPath);
-const authDB = auth(Datastore, dbPath);
+const budgetDB = budget(dynamoose);
+const authDB = auth(dynamoose);
 
 module.exports = {
   budget: budgetDB,
