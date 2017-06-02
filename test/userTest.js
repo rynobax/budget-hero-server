@@ -3,16 +3,16 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const should = chai.should();
 const app = require('../server').app;
-const authDB = require('../db').auth;
+const userDB = require('../db').user;
 const tokenDB = require('../db').token;
 
 process.env.NODE_ENV = 'test';
 
-describe('Auth', () => {
-  beforeEach((done) => {
-    authDB.truncateTable()
+describe('User', () => {
+  beforeEach(function(done){
+    userDB.truncateTable()
       .then(() => done())
-      .catch(done);
+      .catch((err) => {console.log(err); done();});
   });
 
   it('it should let you create an account', (done) => {
@@ -21,9 +21,10 @@ describe('Auth', () => {
       password: 'supersecretpassword'
     };
     chai.request(app)
-      .post('/api/auth/register')
+      .post('/api/user/register')
       .send(user)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.should.have.property('registered');
@@ -38,17 +39,19 @@ describe('Auth', () => {
       password: 'supersecretpassword'
     };
     chai.request(app)
-      .post('/api/auth/register')
+      .post('/api/user/register')
       .send(user)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.should.have.property('registered');
         res.body.registered.should.eql(true);
         chai.request(app)
-          .post('/api/auth/register')
+          .post('/api/user/register')
           .send(user)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('registered');
@@ -64,7 +67,7 @@ describe('Auth', () => {
       password: 'supersecretpassword'
     };
     chai.request(app)
-      .post('/api/auth/register')
+      .post('/api/user/register')
       .send(user)
       .end((err, res) => {
         res.should.have.status(200);
@@ -72,7 +75,7 @@ describe('Auth', () => {
         res.body.should.have.property('registered');
         res.body.registered.should.eql(true);
         chai.request(app)
-          .post('/api/auth/login')
+          .post('/api/user/login')
           .send(user)
           .end((err, res) => {
             res.should.have.status(200);

@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
-const {AuthController} = require('./AuthController');
+const {UserController} = require('./UserController');
 const {BudgetController} = require('./BudgetController');
-const auth = require('../db').auth;
+const {user} = require('../db');
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -17,21 +17,23 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.use('/auth', AuthController);
+router.use('/user', UserController);
 
 // Get username of request
 router.use('/budget', function (req, res, next) {
-  if(!req.signedCookies.token){
-    res.status(401).send('No token included!');
-    return;
+  if(!req.signedCookies['session-token']){
+    return res.status(401).send('No token included!');
   }
-  const username = auth.verify(req.signedCookies.token).then((username) => {
+  const username = user.verify(req.signedCookies['session-token']).then((username) => {
     if(username == null){
       res.status(401).send('Invalid or expired token');
       return;
     }
     req.username = username;
     next();
+  }).catch((err) => {
+    console.log('Error getting request token: ', err);
+    return res.status(401).send('Internal Error');
   });
 });
 router.use('/budget', BudgetController);

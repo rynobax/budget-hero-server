@@ -1,27 +1,27 @@
 const bcrypt = require('bcrypt');
 
-module.exports = function(Datastore, dbPath){
-  const token = require('./token')(Datastore, dbPath);
-  const db = new Datastore({ filename: dbPath+'auth.db', autoload: true });
-  db.ensureIndex({ fieldName: 'username', unique: true }, function (err) {});
-  
-  function getUsers(){
-    return new Promise((resolve, reject) => {
-      db.find({}, function (err, items) {
-        if(err) reject(err);
-        else resolve(items);
-      });
-    });
-  }
+module.exports = function(dynamoose, DBVersion){
+  const session = require('./sessionDB')(dynamoose, DBVersion);
+  const Schema = dynamoose.Schema;
+  const userSchema = new Schema({
+    username: {
+      type: String,
+      hashKey: true,
+      required: true,
+      uppercase: true
+    },
+    passwordHash: {
+      type: String,
+      required: true
+    }
+  });
+  const User = dynamoose.model('User-v'+DBVersion, userSchema);
   
   function getUser(username){
     return new Promise((resolve, reject) => {
-      db.find({username: username}, function (err, items) {
+      User.get(username, function(err, user){
         if(err) reject(err);
-        else {
-          if(items.length == 0) resolve(null);
-          else resolve(items[0]);
-        }
+        else resolve(user);
       });
     });
   }
@@ -50,23 +50,18 @@ module.exports = function(Datastore, dbPath){
         resolve({registered: false, error: errors.join('\n')});
         return;
       }
-      
-      username = username.toUpperCase();
-
       getUser(username).then((user) => {
-        if(user == null){
+        if(user == undefined){
           bcrypt.hash(password, 10, (err, hash) => {
             if(err) return reject(err);
-            const user = {
+            const newUser = new User({
               username: username,
-              hash: hash
-            };
-            db.insert(user, function (err, newUser) {
+              passwordHash: hash
+            });
+            newUser.save((err) => {
               if(err) reject(err);
-              else resolve({
-                registered: true
-              });
-            })
+              else resolve({registered: true});
+            });
           });
         } else {
           resolve({
@@ -80,7 +75,6 @@ module.exports = function(Datastore, dbPath){
 
   function login(username, password, res){
     return new Promise((resolve, reject) => {
-      if(username) username = username.toUpperCase();
       getUser(username).then((user) => {
         if(user == null){
           resolve({
@@ -88,7 +82,7 @@ module.exports = function(Datastore, dbPath){
             error: 'No account with that username exists'
           });
         } else {
-          bcrypt.compare(password, user.hash, function(err, matched) {
+          bcrypt.compare(password, user.passwordHash, function(err, matched) {
             if(err){
               resolve({
                 loggedIn: false,
@@ -100,9 +94,9 @@ module.exports = function(Datastore, dbPath){
                 error: 'Incorrect password'
               });
             } else {
-              token.add(username).then((tok) => {
-                res.cookie('token', tok, {signed: true});
-                res.cookie('unsigned', tok);
+              session.add(username).then((token) => {
+                res.cookie('session-token', token, {signed: true});
+                res.cookie('unsigned', token);
                 resolve({
                   loggedIn: true
                 });
@@ -119,10 +113,10 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  function logout(tok){
+  function logout(token){
     return new Promise((resolve, reject) => {
-      token.remove(tok).then(() => {
-        res.clearCookie('token');
+      session.remove(token).then(() => {
+        res.clearCookie('session-token');
         resolve({
           loggedOut: true
         });
@@ -135,18 +129,24 @@ module.exports = function(Datastore, dbPath){
     });
   }
 
-  function verify(tok){
+  function verify(token){
     return new Promise((resolve, reject) => {
-      resolve(token.check(tok));
+      resolve(session.check(token));
     });
   }
 
   function truncateTable(){
     return new Promise((resolve, reject) => {
-      db.remove({}, { multi: true }, function (err, numRemoved) {
-        if(err) reject(err);
-        else resolve(numRemoved);
-      });
+      User.scan().exec((err, users) => {
+        resolve(Promise.all(users.map((user) => {
+          return new Promise((resolve, reject) => {
+            user.delete((err) => {
+              if(err) reject(err);
+              else resolve();
+            });
+          });
+        })))
+      })
     });
   }
 

@@ -1,19 +1,22 @@
-module.exports = function(dynamoose){
+module.exports = function(dynamoose, DBVersion){
   const Schema = dynamoose.Schema;
   const budgetSchema = new Schema({
     category: {
       type: String,
       uppercase: true,
       trim: true,
-      required: true,
-      rangeKey: true
+      required: true
     },
     name: {
       type: String,
       uppercase: true,
       trim: true,
+      required: true
+    },
+    id: {
+      type: String,
       required: true,
-      rangeKey: true
+      hashKey: true
     },
     amount: {
       type: Number,
@@ -28,15 +31,14 @@ module.exports = function(dynamoose){
       uppercase: true,
       trim: true,
       required: true,
-      hashKey: true
+      rangeKey: true
     },
     income: {
-      type: Boolean,
-      rangeKey: true
+      type: Boolean
     }
   });
 
-  const BudgetItem = dynamoose.model('BudgetItem', budgetSchema);
+  const BudgetItem = dynamoose.model('BudgetItem-v'+DBVersion, budgetSchema);
 
   function validateParams(item, requiredParams){
     const errors = [];
@@ -53,14 +55,12 @@ module.exports = function(dynamoose){
 
   function getItems(username){
     return new Promise((resolve, reject) => {
-      username = username.toUpperCase();
-      db.find({username: username}, function (err, items) {
+      BudgetItem.scan('username').eq(username).exec((err, budgetItems) => {
         if(err) reject(err);
         else resolve(
-          items.reduce((arr, item) => {
+          budgetItems.reduce((arr, item) => {
             const category = item.category;
             delete item.category;
-            delete item.id;
             for(const addedCategory of arr){
               if(addedCategory.name == category){
                 addedCategory.items.push(item);
@@ -82,19 +82,20 @@ module.exports = function(dynamoose){
     return new Promise((resolve, reject) => {
       const errors = validateParams(item, ['name', 'category', 'amount', 'period']);
       if(errors.length > 0) {
-        resolve({added: false, error: errors.join('\n')});
-        return;
+        return resolve({added: false, error: errors.join('\n')});
       }
-      item = Object.assign(item, {username: username});
-      const newItem = BudgetItem(item);
-      console.log('newItem.username: ', newItem.username);
-      BudgetItem.get({username: item.username.toUpperCase(), name: item.name.toUpperCase()}, (err, existingItem) => {
-        if(err) { console.log(err); return reject(err); }
-        console.log('existingItem: ', existingItem);
-        newItem.save((err) => {
-          if(err) { console.log(err); return reject(err); }
-          else resolve({added: true, item: item});
-        })
+      const hrTime=process.hrtime();
+      const id = username + (hrTime[0] * 1000000000 + hrTime[1]);
+      item = Object.assign(item, {username: username, id: id});
+      const newItem = new BudgetItem(item);
+      BudgetItem.scan('username').eq(newItem.username)
+        .where('name').eq(newItem.name)
+        .exec((err, existingItem) => {
+          if(err) reject({added: false, error: err});
+          else newItem.save((err) => {
+            if(err) reject({added: false, error: err});
+            else resolve({added: true, item: item});
+          })
       });
     });
   }
@@ -106,53 +107,45 @@ module.exports = function(dynamoose){
         resolve({updated: false, error: errors.join('\n')});
         return;
       }
-      username = username.toUpperCase();
-      db.find({username: username, name: item.name}, (err, items) => {
-        if(err) resolve({
-          updated: false,
-          error: err
-        });
-        if(items.length > 0){
-          resolve({
-            updated: false,
-            error: 'An item of that name already exists'
-          })
-        } else {
-          item = Object.assign({}, item, {username: username});
-          db.update({_id: id}, item, {}, function (err, numReplaced) {
-            if(err) resolve({
-              updated: false,
-              error: err
-            });
-            else resolve({
-              updated: true
-            });
-          });
-        }
+      BudgetItem.scan('username').eq(username)
+        .where('name').eq(item.name)
+        .exec((err, items) => {
+          if(err) reject({updated: false, error: err});
+          else {
+            if(items.length == 0){
+              const newItem = new BudgetItem(item);
+              BudgetItem.update({username: username, id: id}, newItem, (err) => {
+                if(err) reject({updated: false, error: err});
+                else resolve({updated: true});
+              });
+            }else{
+              resolve({updated: false, error: 'An item of that name already exists'});
+            };
+        };
       });
     });
   }
 
   function deleteItem(username, id){
     return new Promise((resolve, reject) => {
-      username = username.toUpperCase();
-      db.remove({username: username, _id: id}, function (err, numRemoved) {
-        if(err) resolve({
-          deleted: false,
-          error: err
-        });
-        else resolve({
-          deleted: true
-        });
+      BudgetItem.delete({username: username, id: id}, (err) => {
+        if(err) resolve({deleted: false, error: err});
+        else resolve({deleted: true});
       });
     });
   }
 
   function truncateTable(){
     return new Promise((resolve, reject) => {
-      dynamoose.ddb().deleteTable({TableName: 'BudgetItem'}, (err, data) => {
-        if(err) reject(err);
-        else resolve(data);
+      BudgetItem.scan().exec((err, budgetItems) => {
+        resolve(Promise.all(budgetItems.map((budgetItem) => {
+          return new Promise((resolve, reject) => {
+            budgetItem.delete((err) => {
+              if(err) reject(err);
+              else resolve();
+            });
+          });
+        })))
       })
     });
   }
