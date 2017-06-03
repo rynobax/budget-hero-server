@@ -3,12 +3,10 @@ const apiGatewayEvent = require('../api-gateway-event.json')
 
 const server = lambdaFunction.handler(apiGatewayEvent, {
   succeed: v => {
-  console.error('it me')
     console.log(v)
     process.exit(0)
   }
 }, (e, v) => {
-  console.error('it me')
   console.error(v)
   process.exit(1)
 })
