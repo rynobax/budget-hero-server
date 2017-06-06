@@ -3,7 +3,6 @@ const budget = require('./db/budgetDB');
 const user = require('./db/userDB');
 const awsConfig = require('./config.js').aws;
 
-console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
 if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev') {
   console.log('using local ddb');
   dynamoose.local();
