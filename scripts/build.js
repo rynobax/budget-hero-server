@@ -61,7 +61,9 @@ function pack(){
       target: 'node',
       output: {
         path: path.join(__dirname, '..', 'dist'),
-        filename: 'lambda.js'
+        filename: 'lambda.js',
+        library: 'lambda',
+        libraryTarget: 'commonjs2'
       }
     }, (err, stats) => {
       if (err) {
