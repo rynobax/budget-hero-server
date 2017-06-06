@@ -87,7 +87,7 @@ Resources:
     Type: AWS::IAM::Role
   budgetHeroApi:
     Properties:
-      CodeUri: s3://budgethero/6e8686b79d281a02dcfce8bf7dfe1ca7
+      CodeUri: s3://budgethero/5b5749caf11f25fa4a7ee59b225e3c96
       Events:
         ProxyApiGreedy:
           Properties:

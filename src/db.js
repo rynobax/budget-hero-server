@@ -1,17 +1,10 @@
 const dynamoose = require('dynamoose');
 const budget = require('./db/budgetDB');
 const user = require('./db/userDB');
-
-let accessKeyId = 'AKID';
-let secretAccessKey = 'SECRET';
-let region = 'us-east-1';
+const awsConfig = require('./config.js').aws;
 
 dynamoose.local();
-dynamoose.AWS.config.update({
-  accessKeyId: accessKeyId,
-  secretAccessKey: secretAccessKey,
-  region: region
-});
+dynamoose.AWS.config.update(awsConfig);
 dynamoose.setDefaults({
   create: true, // Create table in DB if it does not exist
   waitForActive: true

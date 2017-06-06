@@ -14,4 +14,4 @@ script:
   - npm test
 deploy:
   provider: script
-  script: npm run package-deploy
+  script: npm run build-package-deploy
