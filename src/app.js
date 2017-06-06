@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const {APIController} = require('./api/api');
 
 const app = express();
-if(process.env.NODE_ENV!=='test') app.use(morgan('tiny'))
+if(process.env.NODE_ENV=='dev') app.use(morgan('tiny'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(function(req, res, next) {

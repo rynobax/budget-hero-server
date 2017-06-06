@@ -28,7 +28,7 @@
     "accountId": "013571453046"
   },
   "scripts": {
-    "start": "node ./src/app.local.js",
+    "start": "set NODE_ENV=dev&&node ./src/app.local.js",
     "config": "node ./scripts/configure.js",
     "deconfig": "node ./scripts/deconfigure.js",
     "local": "node scripts/local",
