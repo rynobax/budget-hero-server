@@ -40,7 +40,7 @@
     "package-deploy": "npm run package && npm run deploy",
     "delete-stack": "aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
     "setup": "npm install && (aws s3api get-bucket-location --bucket $npm_package_config_s3BucketName --region $npm_package_config_region || npm run create-bucket) && npm run package-deploy",
-    "test": "set NODE_ENV=test&&mocha test",
+    "test": "set NODE_ENV=test&&mocha -t 10000 test",
     "win-config": "npm run config",
     "win-deconfig": "npm run deconfig",
     "win-local": "npm run local",

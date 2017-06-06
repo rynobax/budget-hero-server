@@ -10,7 +10,7 @@ process.env.NODE_ENV = 'test';
 
 describe('Budget', () => {
   const agent = chai.request.agent(app);
-  before((done) => {
+  before(function(done){
     const user = {username: 'Username', password: 'Password'};
     userDB.truncateTable().then(() => {
       agent.post('/api/user/register')
