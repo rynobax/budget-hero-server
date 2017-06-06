@@ -20,8 +20,7 @@ function clone(){
 function changeConfig(){
   return new Promise((resolve, reject) => {
     // Grabs vars from Travis and populates config file
-    console.log('process.env: ', process.env);
-    if(process.env.TRAVIS === true){
+    if(process.env.TRAVIS === 'true'){
       if(!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION){
         console.log('Missing an enviroment variable');
         process.exit(1);
