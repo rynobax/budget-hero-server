@@ -5,7 +5,7 @@ services:
   - docker
 before_install:
   - docker pull tray/dynamodb-local
-  - docker run -i -t -d --name ddb tray/dynamodb-local -port 8000
+  - docker run -i -t -d --name -p 8000:8000 ddb tray/dynamodb-local -port 8000
   - docker ps -a
   - docker port ddb
 script:
