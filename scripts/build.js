@@ -21,7 +21,7 @@ function changeConfig(){
   console.log('Updating config');
   return new Promise((resolve, reject) => {
     // Grabs vars from Travis and populates config file
-    if(process.env.travis === true){
+    if(process.env.TRAVIS === true){
       if(!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION){
         console.log('Missing an envirmental variable');
         process.exit(1);

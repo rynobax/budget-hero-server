@@ -20,6 +20,7 @@ module.exports = function(dynamoose, DBVersion){
   function getUser(username){
     return new Promise((resolve, reject) => {
       User.get(username, function(err, user){
+        console.log('user: ', user);
         if(err) reject(err);
         else resolve(user);
       });
