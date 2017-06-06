@@ -20,7 +20,6 @@ module.exports = function(dynamoose, DBVersion){
   function getUser(username){
     return new Promise((resolve, reject) => {
       User.get(username, function(err, user){
-        console.log('user: ', user);
         if(err) reject(err);
         else resolve(user);
       });
@@ -77,7 +76,7 @@ module.exports = function(dynamoose, DBVersion){
   function login(username, password, res){
     return new Promise((resolve, reject) => {
       getUser(username).then((user) => {
-        if(user == null){
+        if(user == undefined || user == null){
           resolve({
             loggedIn: false,
             error: 'No account with that username exists'
