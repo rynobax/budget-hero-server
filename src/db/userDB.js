@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 module.exports = function(dynamoose, DBVersion){
   const session = require('./sessionDB')(dynamoose, DBVersion);
