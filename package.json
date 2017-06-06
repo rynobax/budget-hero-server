@@ -21,10 +21,10 @@
     "mocha": "^3.3.0"
   },
   "config": {
-    "s3BucketName": "openbudget",
+    "s3BucketName": "budgethero",
     "region": "us-east-1",
     "cloudFormationStackName": "AwsServerlessExpressStack",
-    "functionName": "openBudgetAPI",
+    "functionName": "budgetHeroApi",
     "accountId": "013571453046"
   },
   "scripts": {

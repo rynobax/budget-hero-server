@@ -10,3 +10,6 @@ before_install:
   - docker port ddb
 script:
   - npm test
+deploy:
+  provider: script
+  script: npm run package-deploy
