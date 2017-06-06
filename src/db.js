@@ -3,7 +3,11 @@ const budget = require('./db/budgetDB');
 const user = require('./db/userDB');
 const awsConfig = require('./config.js').aws;
 
-if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev') dynamoose.local();
+if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev') {
+  console.log('using local ddb');
+  dynamoose.local();
+}
+console.log('awsConfig: ', awsConfig);
 dynamoose.AWS.config.update(awsConfig);
 dynamoose.setDefaults({
   create: true, // Create table in DB if it does not exist
