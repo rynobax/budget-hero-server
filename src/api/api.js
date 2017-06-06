@@ -12,7 +12,7 @@ router.use(cookieParser('mysecretkey'));
 
 // cors
 router.use(function(req, res, next) {
-  if(process.env.NODE_ENV!='test' || process.env.NODE_ENV!='dev'){
+  if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev'){
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   }else {
     res.header("Access-Control-Allow-Origin", "https://rynobax.github.io");
