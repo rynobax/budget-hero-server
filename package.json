@@ -18,7 +18,8 @@
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "eslint": "^3.19.0",
-    "mocha": "^3.3.0"
+    "mocha": "^3.3.0",
+    "webpack": "^2.6.1"
   },
   "config": {
     "s3BucketName": "budgethero",
@@ -29,6 +30,7 @@
   },
   "scripts": {
     "start": "set NODE_ENV=dev&&node ./src/app.local.js",
+    "build": "node ./node_modules/webpack/bin/webpack.js",
     "config": "node ./scripts/configure.js",
     "deconfig": "node ./scripts/deconfigure.js",
     "local": "node scripts/local",
