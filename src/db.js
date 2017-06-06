@@ -11,7 +11,7 @@ dynamoose.setDefaults({
 });
 
 let DBVersion = '1';
-if(process.env.NODE_ENV!='test') DBVersion += '-test';
+if(process.env.NODE_ENV=='test') DBVersion += '-test';
 
 const budgetDB = budget(dynamoose, DBVersion);
 const userDB = user(dynamoose, DBVersion);
@@ -21,7 +21,7 @@ module.exports = {
   user: userDB
 }
 
-if(process.env.NODE_ENV!='test') devInit();
+if(process.env.NODE_ENV=='dev') devInit();
 function devInit(){
     budgetDB.truncateTable().then(() => {
       budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Water', amount: '50', period: 'MONTHLY'});
