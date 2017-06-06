@@ -6,12 +6,17 @@ const {BudgetController} = require('./BudgetController');
 const {user} = require('../db');
 
 const router = express.Router();
+router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cookieParser('mysecretkey'));
 
 // cors
 router.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  if(process.env.NODE_ENV!='test' || process.env.NODE_ENV!='dev'){
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  }else {
+    res.header("Access-Control-Allow-Origin", "https://rynobax.github.io");
+  }
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Credentials", "true");
   next();
