@@ -3,7 +3,10 @@ const budget = require('./db/budgetDB');
 const user = require('./db/userDB');
 const awsConfig = require('./config.js').aws;
 
-if(process.env.NODE_ENV!='test' || process.env.NODE_ENV!='dev') dynamoose.local();
+if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev') {
+  console.log('using local ddb');
+  dynamoose.local();
+}
 dynamoose.AWS.config.update(awsConfig);
 dynamoose.setDefaults({
   create: true, // Create table in DB if it does not exist
@@ -11,7 +14,7 @@ dynamoose.setDefaults({
 });
 
 let DBVersion = '1';
-if(process.env.NODE_ENV!='test') DBVersion += '-test';
+if(process.env.NODE_ENV=='test') DBVersion += '-test';
 
 const budgetDB = budget(dynamoose, DBVersion);
 const userDB = user(dynamoose, DBVersion);
@@ -21,7 +24,7 @@ module.exports = {
   user: userDB
 }
 
-if(process.env.NODE_ENV!='test') devInit();
+if(process.env.NODE_ENV=='dev') devInit();
 function devInit(){
     budgetDB.truncateTable().then(() => {
       budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Water', amount: '50', period: 'MONTHLY'});

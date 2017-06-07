@@ -18,14 +18,14 @@ function clone(){
 }
 
 function changeConfig(){
-  console.log('Updating config');
   return new Promise((resolve, reject) => {
     // Grabs vars from Travis and populates config file
-    if(process.env.TRAVIS === true){
+    if(process.env.TRAVIS === 'true'){
       if(!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION){
-        console.log('Missing an envirmental variable');
+        console.log('Missing an enviroment variable');
         process.exit(1);
       }
+      console.log('Updating config');
       replace({
         regex: "accessKeyId: 'AKID'",
         replacement: "accessKeyId: '" + process.env.AWS_ACCESS_KEY_ID + "'",
@@ -47,6 +47,8 @@ function changeConfig(){
         recursive: true,
         silent: true,
       });
+    }else {
+      console.log('Skipping config update');
     }
     resolve();
   });
