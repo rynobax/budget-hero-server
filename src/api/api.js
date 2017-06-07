@@ -22,25 +22,21 @@ router.use(function(req, res, next) {
   next();
 });
 
-router.use('/user', UserController);
-
-// Get username of request
-router.use('/budget', function (req, res, next) {
-  if(!req.signedCookies['session-token']){
-    return res.status(401).send('No token included!');
-  }
-  const username = user.verify(req.signedCookies['session-token']).then((username) => {
-    if(username == null){
-      res.status(401).send('Invalid or expired token');
-      return;
-    }
-    req.username = username;
+router.use(function(req, res, next) {
+  if(req.signedCookies['session-token']){
+    user.verify(req.signedCookies['session-token']).then((username) => {
+      if(username == null){
+        res.clearCookie('session-token');
+      }
+      req.username = username;
+      next();
+    });
+  }else {
     next();
-  }).catch((err) => {
-    console.log('Error getting request token: ', err);
-    return res.status(401).send('Internal Error');
-  });
-});
+  }
+})
+
+router.use('/user', UserController);
 router.use('/budget', BudgetController);
 router.get('/', (req, res) => {
   res.send('Api Root');

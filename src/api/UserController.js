@@ -15,8 +15,8 @@ router.post('/register', (req, res) => {
   respond(res, user.register(req.body.username, req.body.password));
 });
 
-router.post('/identity', (req, res) => {
-  respond(res, user.identity(req.signedCookies.token));
+router.get('/identity', (req, res) => {
+  respond(res, user.identity(req.username));
 });
 
 module.exports.UserController = router;

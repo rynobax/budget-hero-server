@@ -20,7 +20,6 @@ module.exports = function(dynamoose, DBVersion){
   function getUser(username){
     return new Promise((resolve, reject) => {
       User.get(username, function(err, user){
-        console.log('user: ', user);
         if(err) reject(err);
         else resolve(user);
       });
@@ -97,7 +96,6 @@ module.exports = function(dynamoose, DBVersion){
             } else {
               session.add(username).then((token) => {
                 res.cookie('session-token', token, {signed: true});
-                res.cookie('unsigned', token);
                 resolve({
                   loggedIn: true
                 });
@@ -130,6 +128,23 @@ module.exports = function(dynamoose, DBVersion){
     });
   }
 
+  function identity(username){
+    return new Promise((resolve, reject) => {
+      if(username == null || username == undefined){
+        resolve({
+          identified: false
+        });
+      } else {
+        resolve({
+          identified: true,
+          identity: {
+            username: username
+          }
+        })
+      }
+    });
+  }
+
   function verify(token){
     return new Promise((resolve, reject) => {
       resolve(session.check(token));
@@ -156,6 +171,7 @@ module.exports = function(dynamoose, DBVersion){
     login: login,
     logout: logout,
     verify: verify,
-    truncateTable: truncateTable
+    truncateTable: truncateTable,
+    identity: identity
   }
 }
