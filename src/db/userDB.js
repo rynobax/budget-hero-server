@@ -112,9 +112,9 @@ module.exports = function(dynamoose, DBVersion){
     });
   }
 
-  function logout(token){
+  function logout(username, token, res){
     return new Promise((resolve, reject) => {
-      session.remove(token).then(() => {
+      session.remove(username, token).then(() => {
         res.clearCookie('session-token');
         resolve({
           loggedOut: true

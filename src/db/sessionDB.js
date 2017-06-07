@@ -63,9 +63,9 @@ module.exports = function(dynamoose, DBVersion){
     });
   }
 
-  function remove(token){
+  function remove(username, token){
     return new Promise((resolve, reject) => {
-      Session.delete({token: token}, (err) => {
+      Session.delete({token: token, username: username}, (err) => {
         if(err) reject(err);
         else resolve();
       });

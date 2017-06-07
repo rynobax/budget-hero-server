@@ -8,7 +8,7 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  respond(res, user.logout(req.signedCookies.token, res));
+  respond(res, user.logout(req.username, req.signedCookies['session-token'], res));
 });
 
 router.post('/register', (req, res) => {
