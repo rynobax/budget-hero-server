@@ -118,7 +118,10 @@ module.exports = function(dynamoose, DBVersion){
     });
   }
 
-  function updateItem(username, id, item){
+  function updateItem(username, item){
+    const id = item.id;
+    delete item.id;
+    console.log('item: ', item);
     return new Promise((resolve, reject) => {
       const errors = validateParams(item, ['name', 'category', 'amount', 'period']);
       if(errors.length > 0) {
@@ -130,14 +133,13 @@ module.exports = function(dynamoose, DBVersion){
         .exec((err, items) => {
           if(err) reject({updated: false, error: err});
           else {
-            if(items.length == 0){
-              const newItem = new BudgetItem(item);
-              BudgetItem.update({username: username, id: id}, newItem, (err) => {
+            if(items.length > 0 && items[0].id != id){
+              resolve({updated: false, error: 'An item of that name already exists'});
+            }else{
+              BudgetItem.update({username: username, id: id}, item, (err) => {
                 if(err) reject({updated: false, error: err});
                 else resolve({updated: true});
               });
-            }else{
-              resolve({updated: false, error: 'An item of that name already exists'});
             };
         };
       });

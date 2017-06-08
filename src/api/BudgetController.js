@@ -11,12 +11,12 @@ router.get('/', function (req, res) {
   respond(res, budget.getItems(req.username));
 });
 
-router.put('/:id', function (req, res) {
-  respond(res, budget.updateItem(req.username, req.params.id, req.body));
+router.put('/', function (req, res) {
+  respond(res, budget.updateItem(req.username, req.body.item));
 });
 
-router.delete('/:id', function (req, res) {
-  respond(res, budget.deleteItem(req.username, req.params.id));
+router.delete('/', function (req, res) {
+  respond(res, budget.deleteItem(req.username, req.body.id));
 });
 
 module.exports.BudgetController = router;
