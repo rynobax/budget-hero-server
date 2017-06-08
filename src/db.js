@@ -13,7 +13,7 @@ dynamoose.setDefaults({
   waitForActive: true
 });
 
-let DBVersion = '2';
+let DBVersion = '3';
 if(process.env.NODE_ENV=='test') DBVersion += '-test';
 
 const budgetDB = budget(dynamoose, DBVersion);
@@ -26,14 +26,15 @@ module.exports = {
 
 if(process.env.NODE_ENV=='dev') devInit();
 function devInit(){
-    budgetDB.truncateTable().then(() => {
-      budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Water', amount: '50', period: 'MONTHLY'});
-      budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Electrial', amount: '20', period: 'MONTHLY'});
-      budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Internet', amount: '75', period: 'MONTHLY'});
-      budgetDB.addItem('rynobax', {category: 'Personal', name: 'Spending', amount: '15', period: 'PERCENT'});
-      budgetDB.addItem('rynobax', {category: 'Personal', name: 'Saving', amount: '25', period: 'PERCENT'});
-    });
-    userDB.truncateTable().then(() => {
-      userDB.register('rynobax', 'password');
-    });
+  console.log('Initializing table for dev');
+  budgetDB.truncateTable().then(() => {
+    budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Water', amount: '50', period: 'MONTHLY'});
+    budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Electrial', amount: '20', period: 'MONTHLY'});
+    budgetDB.addItem('rynobax', {category: 'Utilities', name: 'Internet', amount: '75', period: 'MONTHLY'});
+    budgetDB.addItem('rynobax', {category: 'Personal', name: 'Spending', amount: '15', period: 'PERCENT'});
+    budgetDB.addItem('rynobax', {category: 'Personal', name: 'Saving', amount: '25', period: 'PERCENT'});
+  }).catch(console.error);
+  userDB.truncateTable().then(() => {
+    userDB.register('rynobax', 'password');
+  }).catch(console.error);
 }

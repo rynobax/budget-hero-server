@@ -15,7 +15,7 @@ router.post('/register', (req, res) => {
   respond(res, user.register(req.body.username, req.body.password));
 });
 
-router.get('/identity', (req, res) => {
+router.post('/identity', (req, res) => {
   respond(res, user.identity(req.username));
 });
 

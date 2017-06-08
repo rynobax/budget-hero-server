@@ -69,8 +69,11 @@ module.exports = function(dynamoose, DBVersion){
         if(err) reject(err);
         else resolve(
           budgetItems.reduce((arr, item) => {
-            const category = item.category;
+            const category = item.categoryPretty;
             delete item.category;
+            delete item.categoryPretty;
+            item.name = item.namePretty;
+            delete item.namePretty;
             for(const addedCategory of arr){
               if(addedCategory.name == category){
                 addedCategory.items.push(item);

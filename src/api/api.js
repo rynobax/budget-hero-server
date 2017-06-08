@@ -24,13 +24,15 @@ router.use(function(req, res, next) {
 
 router.use(function(req, res, next) {
   if(req.signedCookies['session-token']){
-    user.verify(req.signedCookies['session-token']).then((username) => {
-      if(username == null){
-        res.clearCookie('session-token');
-      }
-      req.username = username;
-      next();
-    });
+    user.verify(req.signedCookies['session-token'])
+      .then((username) => {
+        if(username == null){
+          res.clearCookie('session-token');
+        }
+        req.username = username;
+        next();
+      })
+      .catch(console.error);
   }else {
     next();
   }

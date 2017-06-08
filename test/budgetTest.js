@@ -26,7 +26,7 @@ describe('Budget', () => {
               done();
             });
         });
-    })
+    }).catch(console.error);
   });
   beforeEach((done) => {
     budgetDB.truncateTable()
@@ -176,7 +176,7 @@ describe('Budget', () => {
                   res.body.should.be.a('array');
                   const category = res.body[0];
                   category.should.be.a('object');
-                  category.name.should.eql('PERSONAL');
+                  category.name.should.eql('Personal');
                   category.items.should.be.a('array');
                   category.items.length.should.eql(2);
                   const item = category.items[0];

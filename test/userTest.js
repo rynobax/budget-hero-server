@@ -118,4 +118,37 @@ describe('User', () => {
         });
     });
   });
+  
+  it('it should identify you', (done) => {
+    const user = {
+      username: 'UseRnaMe',
+      password: 'supersecretpassword'
+    };
+    const agent = chai.request.agent(app);
+    agent.post('/api/user/register')
+      .send(user)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('registered');
+        res.body.registered.should.eql(true);
+        agent.post('/api/user/login')
+          .send(user)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('loggedIn');
+            res.body.loggedIn.should.eql(true);
+            agent.post('/api/user/identity')
+              .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('identified');
+                res.body.identified.should.eql(true);
+                res.body.identity.username.should.eql(user.username);
+                done();
+              });
+        });
+    });
+  });
 });

@@ -12,7 +12,6 @@ module.exports = function(dynamoose, DBVersion){
     },
     usernamePretty: {
       type: String,
-      hashKey: true,
       required: true,
     },
     passwordHash: {
@@ -55,6 +54,7 @@ module.exports = function(dynamoose, DBVersion){
         resolve({registered: false, error: errors.join('\n')});
         return;
       }
+
       getUser(username).then((user) => {
         if(user == undefined){
           bcrypt.hash(password, 10, (err, hash) => {
@@ -140,18 +140,20 @@ module.exports = function(dynamoose, DBVersion){
 
   function identity(username){
     return new Promise((resolve, reject) => {
-      if(username == null || username == undefined){
-        resolve({
-          identified: false
-        });
-      } else {
-        resolve({
-          identified: true,
-          identity: {
-            username: username
-          }
-        })
-      }
+      getUser(username).then((user) => {
+        if(user == undefined || user == null){
+          resolve({
+            identified: false
+          });
+        }else {
+          resolve({
+            identified: true,
+            identity: {
+              username: user.usernamePretty
+            }
+          })
+        }
+      });
     });
   }
 
