@@ -10,6 +10,11 @@ module.exports = function(dynamoose, DBVersion){
       required: true,
       uppercase: true
     },
+    usernamePretty: {
+      type: String,
+      hashKey: true,
+      required: true,
+    },
     passwordHash: {
       type: String,
       required: true
@@ -56,6 +61,7 @@ module.exports = function(dynamoose, DBVersion){
             if(err) return reject(err);
             const newUser = new User({
               username: username,
+              usernamePretty: username,
               passwordHash: hash
             });
             newUser.save((err) => {

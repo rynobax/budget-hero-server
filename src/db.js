@@ -13,7 +13,7 @@ dynamoose.setDefaults({
   waitForActive: true
 });
 
-let DBVersion = '1';
+let DBVersion = '2';
 if(process.env.NODE_ENV=='test') DBVersion += '-test';
 
 const budgetDB = budget(dynamoose, DBVersion);

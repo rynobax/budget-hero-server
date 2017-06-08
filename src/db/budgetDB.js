@@ -7,9 +7,19 @@ module.exports = function(dynamoose, DBVersion){
       trim: true,
       required: true
     },
+    categoryPretty: {
+      type: String,
+      trim: true,
+      required: true
+    },
     name: {
       type: String,
       uppercase: true,
+      trim: true,
+      required: true
+    },
+    namePretty: {
+      type: String,
       trim: true,
       required: true
     },
@@ -86,7 +96,12 @@ module.exports = function(dynamoose, DBVersion){
       }
       const hrTime=process.hrtime();
       const id = username + (hrTime[0] * 1000000000 + hrTime[1]);
-      item = Object.assign(item, {username: username, id: id});
+      item = Object.assign(item, {
+        username: username,
+        id: id,
+        categoryPretty: item.category,
+        namePretty: item.name
+      });
       const newItem = new BudgetItem(item);
       BudgetItem.scan('username').eq(newItem.username)
         .where('name').eq(newItem.name)
