@@ -121,7 +121,6 @@ module.exports = function(dynamoose, DBVersion){
   function updateItem(username, item){
     const id = item.id;
     delete item.id;
-    console.log('item: ', item);
     return new Promise((resolve, reject) => {
       const errors = validateParams(item, ['name', 'category', 'amount', 'period']);
       if(errors.length > 0) {

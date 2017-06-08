@@ -4,7 +4,7 @@ const {budget} = require('../db');
 const {respond} = require('./response');
 
 router.post('/', function (req, res) {
-  respond(res, budget.addItem(req.username, req.body));
+  respond(res, budget.addItem(req.username, req.body.item));
 });
 
 router.get('/', function (req, res) {

@@ -44,7 +44,7 @@ describe('Budget', () => {
         period: 'MONTHLY'
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
@@ -64,7 +64,7 @@ describe('Budget', () => {
         amount: 10,
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
@@ -89,10 +89,10 @@ describe('Budget', () => {
         amount: 10,
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           agent.post('/api/budget')
-            .send(repeatBudget)
+            .send({item: repeatBudget})
             .end((err, res) => {
               should.not.exist(err);
               res.should.have.status(200);
@@ -112,7 +112,7 @@ describe('Budget', () => {
         period: 'WEEKLY'
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
@@ -133,7 +133,7 @@ describe('Budget', () => {
         amount: 10,
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
@@ -162,11 +162,11 @@ describe('Budget', () => {
         period: 'WEEKLY'
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           agent.post('/api/budget')
-            .send(budget2)
+            .send({item: budget2})
             .end((err, res) => {
               should.not.exist(err);
               agent.get('/api/budget')
@@ -189,20 +189,27 @@ describe('Budget', () => {
     });
   });
   
-  describe('/PUT/:id budget', () => {
-    it('it should UPDATE a budget item given the id', (done) => {
+  describe('/PUT budget', () => {
+    it('it should UPDATE a budget item', (done) => {
       const budget = {
         name: 'Savings',
         category: 'Personal',
         amount: 10,
-        period: 'WEEKLY' 
+        period: 'WEEKLY'
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
+          const updateItem = {
+            name: 'Spending', 
+            category: 'Personal', 
+            amount: 10, 
+            period: 'PERCENT', 
+            id: res.body.item.id
+          };
           agent
-            .put('/api/budget/' + budgetDB._id)
-            .send({name: 'Spending', category: 'Personal', amount: 10, period: 'PERCENT'})
+            .put('/api/budget/')
+            .send({item: updateItem})
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
@@ -215,26 +222,34 @@ describe('Budget', () => {
 
     it('it should NOT UPDATE a budget item to an identical name', (done) => {
       const budget = {
-        name: 'Savings',
-        category: 'Personal',
-        amount: 10,
-        period: 'WEEKLY' 
-      };
-      const repeatBudget = {
         name: 'Spending',
         category: 'Personal',
         amount: 10,
         period: 'WEEKLY' 
       };
       agent.post('/api/budget')
-        .send(repeatBudget)
+        .send({item: budget})
         .end((err, res) => {
+          const repeatBudget = {
+            name: 'Savings',
+            category: 'Personal',
+            amount: 10,
+            period: 'WEEKLY',
+            id: res.body.item.id
+          };
           should.not.exist(err);
           agent.post('/api/budget')
-            .send(repeatBudget)
+            .send({item: repeatBudget})
             .end((err, res) => {
-              agent.put('/api/budget/' + budgetDB._id)
-                .send({name: 'Spending', category: 'Personal', amount: 10, period: 'WEEKLY'})
+              const updateItem = {
+                name: 'Spending', 
+                category: 'Personal', 
+                amount: 10, 
+                period: 'WEEKLY',
+                id: res.body.item.id
+              };
+              agent.put('/api/budget')
+                .send({item: updateItem})
                 .end((err, res) => {
                   should.not.exist(err);
                   res.should.have.status(200);
@@ -256,18 +271,19 @@ describe('Budget', () => {
         amount: 10,
         period: 'WEEKLY' 
       };
-      const replacementBudget = {
-        name: '', 
-        category: 'Personal', 
-        amount: 10, 
-        period: 'PERCENT'
-      };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
-          agent.put('/api/budget/' + budgetDB._id)
-            .send(replacementBudget)
+          const replacementBudget = {
+            name: '', 
+            category: 'Personal', 
+            amount: 10, 
+            period: 'PERCENT',
+            id: res.body.item.id
+          };
+          agent.put('/api/budget')
+            .send({item: replacementBudget})
             .end((err, res) => {
               should.not.exist(err);
               res.should.have.status(200);
@@ -281,7 +297,7 @@ describe('Budget', () => {
     });
   });
 
-  describe('/DELETE/:id book', () => {
+  describe('/DELETE book', () => {
     it('it should DELETE a book given the id', (done) => {
       const budget = {
         name: "Savings",
@@ -290,11 +306,12 @@ describe('Budget', () => {
         amount: 10,
       };
       agent.post('/api/budget')
-        .send(budget)
+        .send({item: budget})
         .end((err, res) => {
           should.not.exist(err);
           agent
-            .delete('/api/budget/' + budgetDB._id)
+            .delete('/api/budget')
+            .send({id: res.body.item.id})
             .end((err, res) => {
             should.not.exist(err);
               res.should.have.status(200);
