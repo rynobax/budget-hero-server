@@ -35,6 +35,6 @@ function devInit(){
     budgetDB.addItem('rynobax', {category: 'Personal', name: 'Saving', amount: '25', period: 'PERCENT'});
   }).catch(console.error);
   userDB.truncateTable().then(() => {
-    userDB.register('rynobax', 'password');
+    userDB.register('Rynobax', 'password');
   }).catch(console.error);
 }
