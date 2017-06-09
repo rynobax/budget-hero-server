@@ -68,24 +68,13 @@ module.exports = function(dynamoose, DBVersion){
       BudgetItem.scan('username').eq(username).exec((err, budgetItems) => {
         if(err) reject(err);
         else resolve(
-          budgetItems.reduce((arr, item) => {
-            const category = item.categoryPretty;
-            delete item.category;
+          {items: budgetItems.map((item) => {
+            item.category = item.categoryPretty;
             delete item.categoryPretty;
             item.name = item.namePretty;
             delete item.namePretty;
-            for(const addedCategory of arr){
-              if(addedCategory.name == category){
-                addedCategory.items.push(item);
-                return arr;
-              }
-            }
-            arr.push({
-              name: category,
-              items: [item]
-            });
-            return arr;
-          }, [])
+            return item;
+          })}
         );
       });
     });
