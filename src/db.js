@@ -1,6 +1,8 @@
 const dynamoose = require('dynamoose');
 const budget = require('./db/budgetDB');
 const user = require('./db/userDB');
+const income = require('./db/incomeDB');
+
 const awsConfig = require('./config.js').aws;
 
 if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev') {
@@ -13,15 +15,17 @@ dynamoose.setDefaults({
   waitForActive: true
 });
 
-let DBVersion = '3';
+let DBVersion = '5';
 if(process.env.NODE_ENV=='test') DBVersion += '-test';
 
 const budgetDB = budget(dynamoose, DBVersion);
 const userDB = user(dynamoose, DBVersion);
+const incomeDB = income(dynamoose, DBVersion);
 
 module.exports = {
   budget: budgetDB,
-  user: userDB
+  user: userDB,
+  income: incomeDB
 }
 
 if(process.env.NODE_ENV=='dev') devInit();

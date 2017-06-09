@@ -42,9 +42,6 @@ module.exports = function(dynamoose, DBVersion){
       trim: true,
       required: true,
       rangeKey: true
-    },
-    income: {
-      type: Boolean
     }
   });
 

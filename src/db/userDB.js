@@ -31,6 +31,7 @@ module.exports = function(dynamoose, DBVersion){
   }
 
   function register(username, password){
+    const income = require('../db').income;
     return new Promise((resolve, reject) => {
       const errors = [];
 
@@ -66,7 +67,10 @@ module.exports = function(dynamoose, DBVersion){
             });
             newUser.save((err) => {
               if(err) reject(err);
-              else resolve({registered: true});
+              else {
+                income.add(username);
+                resolve({registered: true})
+              };
             });
           });
         } else {

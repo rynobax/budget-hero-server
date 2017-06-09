@@ -173,13 +173,10 @@ describe('Budget', () => {
                 .end((err, res) => {
                   should.not.exist(err);
                   res.should.have.status(200);
-                  res.body.should.be.a('array');
-                  const category = res.body[0];
-                  category.should.be.a('object');
-                  category.name.should.eql('Personal');
-                  category.items.should.be.a('array');
-                  category.items.length.should.eql(2);
-                  const item = category.items[0];
+                  res.body.should.be.a('object');
+                  res.body.should.have.property('items');
+                  res.body.items.should.be.a('array');
+                  const item = res.body.items[0];
                   item.should.have.property('name');
                   item.should.have.property('amount');
                   done();

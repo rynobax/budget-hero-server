@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const {APIController} = require('./api/api');
+const {APIController} = require('./api');
 
 const app = express();
 if(process.env.NODE_ENV=='dev') app.use(morgan('tiny'))

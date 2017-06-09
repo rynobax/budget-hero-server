@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
-const {UserController} = require('./UserController');
-const {BudgetController} = require('./BudgetController');
-const {user} = require('../db');
+const {UserController} = require('./api/UserController');
+const {BudgetController} = require('./api/BudgetController');
+const {IncomeController} = require('./api/IncomeController');
+const {user} = require('./db');
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -41,6 +42,7 @@ router.use(function(req, res, next) {
 
 router.use('/user', UserController);
 router.use('/budget', BudgetController);
+router.use('/income', IncomeController);
 router.get('/', (req, res) => {
   res.send('Api Root');
 });
