@@ -47,8 +47,10 @@ describe('Budget', () => {
   describe('/PUT income', () => {
     it('it should PUT an income', (done) => {
       const data = {
-        amount: 50000,
-        period: 'YEARLY'
+        income:{
+          amount: 50000,
+          period: 'YEARLY'
+        }
       };
       agent.put('/api/income')
         .send(data)
