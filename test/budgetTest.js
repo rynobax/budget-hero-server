@@ -294,8 +294,8 @@ describe('Budget', () => {
     });
   });
 
-  describe('/DELETE book', () => {
-    it('it should DELETE a book given the id', (done) => {
+  describe('/DELETE item', () => {
+    it('it should DELETE a item given the id', (done) => {
       const budget = {
         name: "Savings",
         category: 'Personal',
@@ -308,7 +308,11 @@ describe('Budget', () => {
           should.not.exist(err);
           agent
             .delete('/api/budget')
-            .send({id: res.body.item.id})
+            .send({
+              item: {
+                id: res.body.item.id
+              }
+            })
             .end((err, res) => {
             should.not.exist(err);
               res.should.have.status(200);

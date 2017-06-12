@@ -16,7 +16,7 @@ router.put('/', function (req, res) {
 });
 
 router.delete('/', function (req, res) {
-  respond(res, budget.deleteItem(req.username, req.body.id));
+  respond(res, budget.deleteItem(req.username, req.body.item.id));
 });
 
 module.exports.BudgetController = router;
