@@ -132,8 +132,10 @@ module.exports = function(dynamoose, DBVersion){
   }
 
   function deleteItem(username, id){
+    console.log('deleting username: ' + username + ', id: ' + id)
     return new Promise((resolve, reject) => {
       BudgetItem.delete({username: username, id: id}, (err) => {
+        console.log('err: ', err);
         if(err) resolve({deleted: false, error: err});
         else resolve({deleted: true});
       });
