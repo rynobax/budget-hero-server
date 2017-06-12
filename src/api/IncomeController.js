@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-  respond(res, income.update(req.username, req.body.amount, req.body.period));
+  respond(res, income.update(req.username, req.body.income.amount, req.body.income.period));
 });
 
 module.exports.IncomeController = router;
