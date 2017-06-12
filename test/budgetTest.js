@@ -307,7 +307,7 @@ describe('Budget', () => {
         .end((err, res) => {
           should.not.exist(err);
           agent
-            .delete('/api/budget')
+            .post('/api/budget/delete')
             .send({
               item: {
                 id: res.body.item.id

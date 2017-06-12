@@ -15,7 +15,7 @@ router.put('/', function (req, res) {
   respond(res, budget.updateItem(req.username, req.body.item));
 });
 
-router.delete('/', function (req, res) {
+router.post('/delete', function (req, res) {
   respond(res, budget.deleteItem(req.username, req.body.item.id));
 });
 
