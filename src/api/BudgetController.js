@@ -16,7 +16,6 @@ router.put('/', function (req, res) {
 });
 
 router.delete('/', function (req, res) {
-  console.log('req: ', req);
   respond(res, budget.deleteItem(req.username, req.body.item.id));
 });
 

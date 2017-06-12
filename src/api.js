@@ -13,6 +13,9 @@ router.use(cookieParser('mysecretkey'));
 
 // cors
 router.use(function(req, res, next) {
+  console.log('req host: ', req.host);
+  console.log('req headers: ', req.headers.rawHeaders);
+  console.log('req body: ', req.body);
   if(process.env.NODE_ENV=='test' || process.env.NODE_ENV=='dev'){
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   }else {
