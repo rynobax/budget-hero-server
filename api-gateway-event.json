@@ -1,8 +1,8 @@
 {
-    "httpMethod": "GET",
-    "//body": "",
-    "path": "/",
-    "resource": "/",
+    "httpMethod": "DELETE",
+    "body": "{\"item\": {\"id\": \"TESTUSER1741633176337098\"}}",
+    "path": "/api/budget/",
+    "resource": "/api/budget/",
     "queryStringParameters": {},
     "pathParameters": {
     },
@@ -10,6 +10,7 @@
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate, sdch, br",
         "Accept-Language": "en-US,en;q=0.8",
+        "Cookie": "session-token=s%3A1177857f20c593abc722953e369a1fff4228c14fee3569d42e9bc0eceec8639771b016cb3a38554f3ad4956478c3f09d58e875acf988cae59a755a877b1cb23f.iYQUd7EoVWp1IFH5Qfnen67RD0AXwLEwRJ%2BA%2FUJ1tZw",
         "CloudFront-Forwarded-Proto": "https",
         "CloudFront-Is-Desktop-Viewer": "true",
         "CloudFront-Is-Mobile-Viewer": "false",
@@ -45,7 +46,7 @@
             "user": ""
         },
         "resourcePath": "/{proxy+}",
-        "httpMethod": "GET",
+        "httpMethod": "DELETE",
         "apiId": "xxxxxxxxxx"
     }
 }

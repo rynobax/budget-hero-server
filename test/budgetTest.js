@@ -305,7 +305,6 @@ describe('Budget', () => {
       agent.post('/api/budget')
         .send({item: budget})
         .end((err, res) => {
-          should.not.exist(err);
           agent
             .post('/api/budget/delete')
             .send({
@@ -314,7 +313,6 @@ describe('Budget', () => {
               }
             })
             .end((err, res) => {
-            should.not.exist(err);
               res.should.have.status(200);
               res.body.should.have.property('deleted');
               res.body.deleted.should.eql(true);

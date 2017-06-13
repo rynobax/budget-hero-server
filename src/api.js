@@ -34,7 +34,7 @@ router.use(function(req, res, next) {
         req.username = username;
         next();
       })
-      .catch(console.error);
+      .catch((err) => console.error('Error verifying cookies: ' + err));
   }else {
     next();
   }

@@ -4,6 +4,7 @@ const apiGatewayEvent = require('../api-gateway-event.json')
 const server = lambdaFunction.handler(apiGatewayEvent, {
   succeed: v => {
     console.log(v)
+    if(v.isBase64Encoded) console.log(Buffer.from(v.body, 'base64').toString())
     process.exit(0)
   }
 }, (e, v) => {
